@@ -1,15 +1,1103 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API Documentation</title>
-   
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TCE ERP — Partner Integration Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --tce-dark:    #091E42;
+      --tce-mid:     #0D2B5C;
+      --tce-blue:    #0052CC;
+      --tce-accent:  #0065FF;
+      --tce-light:   #F4F5F7;
+      --tce-white:   #FFFFFF;
+      --tce-muted:   #6B778C;
+      --tce-border:  #DFE1E6;
+      --radius:      10px;
+      --card-shadow: 0 2px 16px rgba(9,30,66,.10), 0 0 0 1px rgba(9,30,66,.06);
+      --card-hover:  0 8px 32px rgba(0,82,204,.18), 0 0 0 1px rgba(0,82,204,.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tce-light);
+      color: var(--tce-dark);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .hero {
+      background: var(--tce-dark);
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,101,255,.16) 1.5px, transparent 1.5px);
+      background-size: 28px 28px;
+      animation: gridDrift 22s linear infinite;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 64px;
+      background: var(--tce-light);
+      clip-path: polygon(0 100%, 100% 0, 100% 100%);
+    }
+
+    @keyframes gridDrift {
+      from { background-position: 0 0; }
+      to   { background-position: 56px 56px; }
+    }
+
+    /* ── Nav ──────────────────────────────────────────────────── */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 60px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tce-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-badge {
+      height: 42px;
+      width: auto;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    .logo-text { display: flex; flex-direction: column; line-height: 1; }
+
+    .logo-name {
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .logo-sub {
+      font-size: 10.5px;
+      color: rgba(255,255,255,.45);
+      margin-top: 3px;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .nav-tag {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,.6);
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Hero Content ─────────────────────────────────────────── */
+    .hero-content {
+      flex: 1;
+      padding: 8px 60px 88px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,101,255,.16);
+      border: 1px solid rgba(0,101,255,.28);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #7ab2ff;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      animation: fadeUp .55s ease .08s both;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: #7ab2ff;
+      border-radius: 50%;
+      animation: blink 2.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .3; transform: scale(.65); }
+    }
+
+    .hero-title {
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-size: clamp(30px, 4.5vw, 50px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.08;
+      max-width: 600px;
+      margin-bottom: 16px;
+      animation: fadeUp .55s ease .18s both;
+    }
+
+    .hero-title .gradient-text {
+      background: linear-gradient(92deg, #7ab2ff 0%, var(--tce-accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 15.5px;
+      color: rgba(255,255,255,.58);
+      max-width: 500px;
+      line-height: 1.68;
+      font-weight: 300;
+      animation: fadeUp .55s ease .28s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── API Cards ────────────────────────────────────────────── */
+    .section-apis {
+      padding: 68px 60px 56px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .section-header { margin-bottom: 36px; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      color: var(--tce-blue);
+      margin-bottom: 7px;
+    }
+
+    .section-title {
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--tce-dark);
+      margin-bottom: 6px;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--tce-muted);
+      max-width: 440px;
+    }
+
+    .api-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .api-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      padding: 26px 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow .22s ease, transform .22s ease;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .5s ease both;
+    }
+
+    .api-card:nth-child(1) { animation-delay: .05s; }
+    .api-card:nth-child(2) { animation-delay: .14s; }
+    .api-card:nth-child(3) { animation-delay: .23s; }
+
+    .api-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--c1), var(--c2));
+      opacity: 0;
+      transition: opacity .22s ease;
+    }
+
+    .api-card:hover { box-shadow: var(--card-hover); transform: translateY(-3px); }
+    .api-card:hover::before { opacity: 1; }
+
+    .api-card.auth    { --c1: #0065FF; --c2: #00B8D9; }
+    .api-card.teacher { --c1: #36B37E; --c2: #57D9A3; }
+    .api-card.config  { --c1: #FF8B00; --c2: #FF5630; }
+
+    .card-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 11px;
+      width: fit-content;
+      margin-bottom: 18px;
+    }
+
+    .api-card.auth    .card-badge { background: #DEEBFF; color: #0747A6; }
+    .api-card.teacher .card-badge { background: #E3FCEF; color: #006644; }
+    .api-card.config  .card-badge { background: #FFF0B3; color: #974F0C; }
+
+    .card-icon {
+      width: 46px; height: 46px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .api-card.auth    .card-icon { background: #DEEBFF; }
+    .api-card.teacher .card-icon { background: #E3FCEF; }
+    .api-card.config  .card-icon { background: #FFF8E6; }
+
+    .card-title {
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--tce-dark);
+      margin-bottom: 9px;
+      line-height: 1.2;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--tce-muted);
+      line-height: 1.58;
+      flex: 1;
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--tce-border);
+    }
+
+    .card-meta {
+      font-size: 11px;
+      color: var(--tce-muted);
+      font-weight: 500;
+    }
+
+    .card-cta {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--tce-blue);
+      transition: gap .18s ease;
+    }
+
+    .api-card:hover .card-cta { gap: 9px; }
+
+    .card-cta svg {
+      width: 13px; height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Steps Section ────────────────────────────────────────── */
+    .section-steps {
+      background: var(--tce-dark);
+      padding: 80px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-steps::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 0; right: 0;
+      height: 60px;
+      background: var(--tce-light);
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+    }
+
+    .section-steps::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: 0; right: 0;
+      height: 60px;
+      background: var(--tce-light);
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    }
+
+    .steps-dots {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,101,255,.09) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    .steps-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .steps-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .steps-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      color: #7ab2ff;
+      margin-bottom: 10px;
+    }
+
+    .steps-title {
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .steps-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,.45);
+      font-weight: 300;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 38px;
+      left: calc(16.67% + 32px);
+      right: calc(16.67% + 32px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,101,255,.35), rgba(0,101,255,.35), transparent);
+      pointer-events: none;
+    }
+
+    .step-card {
+      background: rgba(255,255,255,.045);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .step-num {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--tce-accent), #003fa3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      margin: 0 auto 18px;
+      box-shadow: 0 4px 16px rgba(0,101,255,.35);
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-title {
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,.48);
+      line-height: 1.62;
+      font-weight: 300;
+    }
+
+    .step-desc code {
+      background: rgba(0,101,255,.18);
+      border: 1px solid rgba(0,101,255,.22);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 11px;
+      color: #a8c4ff;
+    }
+
+    /* ── Notice ───────────────────────────────────────────────── */
+    .notice-wrap {
+      max-width: 1120px;
+      margin: 68px auto 0;
+      padding: 0 60px;
+    }
+
+    .notice-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: #EAF2FF;
+      border: 1px solid #B3CEFF;
+      border-left: 4px solid var(--tce-blue);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .notice-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    .notice-text {
+      font-size: 13.5px;
+      color: #0747A6;
+      line-height: 1.58;
+    }
+
+    .notice-text strong { font-weight: 600; }
+    .notice-text a { color: var(--tce-blue); font-weight: 600; text-decoration: none; }
+    .notice-text a:hover { text-decoration: underline; }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    .footer {
+      background: var(--tce-dark);
+      margin-top: 64px;
+      padding: 36px 60px 28px;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .footer-logo {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.65;
+    }
+
+    .footer-brand-text {
+      font-family: 'IBM Plex Serif', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,.55);
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      font-size: 12.5px;
+      color: rgba(255,255,255,.38);
+      text-decoration: none;
+      transition: color .18s;
+    }
+
+    .footer-link:hover { color: rgba(255,255,255,.75); }
+
+    .footer-sep {
+      width: 1px; height: 13px;
+      background: rgba(255,255,255,.1);
+    }
+
+    .footer-copy {
+      max-width: 1120px;
+      margin: 16px auto 0;
+      font-size: 11.5px;
+      color: rgba(255,255,255,.22);
+      text-align: center;
+    }
+
+    /* ── Access Modal ─────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(9,30,66,.75);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 14px;
+      width: calc(100% - 40px);
+      max-width: 420px;
+      overflow: hidden;
+      box-shadow: 0 28px 72px rgba(9,30,66,.38);
+      transform: translateY(20px) scale(.97);
+      transition: transform .26s ease;
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-head {
+      background: var(--tce-dark);
+      padding: 20px 26px 18px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .modal-head-icon {
+      width: 40px; height: 40px;
+      background: rgba(0,101,255,.22);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .modal-sub {
+      font-size: 11.5px;
+      color: rgba(255,255,255,.45);
+      margin-top: 2px;
+    }
+
+    .modal-body { padding: 26px 28px 24px; }
+
+    .modal-desc {
+      font-size: 13.5px;
+      color: var(--tce-muted);
+      line-height: 1.6;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .otp-wrap {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .digit-input {
+      width: 48px; height: 56px;
+      border: 2px solid var(--tce-border);
+      border-radius: 8px;
+      text-align: center;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--tce-dark);
+      outline: none;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+      caret-color: transparent;
+      background: #fff;
+    }
+
+    .digit-input:focus {
+      border-color: var(--tce-accent);
+      box-shadow: 0 0 0 3px rgba(0,101,255,.12);
+    }
+
+    .digit-input.filled {
+      border-color: var(--tce-blue);
+      background: #EEF4FF;
+    }
+
+    .digit-input.error-state {
+      border-color: #FF5630;
+      background: #FFF4F2;
+      animation: shake .35s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60%  { transform: translateX(-5px); }
+      40%, 80%  { transform: translateX(5px); }
+    }
+
+    .modal-error {
+      min-height: 20px;
+      margin: 10px 0 18px;
+      text-align: center;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #DE350B;
+    }
+
+    .modal-actions { display: flex; gap: 10px; }
+
+    .btn-verify {
+      flex: 1;
+      background: var(--tce-blue);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 12px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .18s, transform .12s;
+    }
+
+    .btn-verify:hover:not(:disabled) { background: var(--tce-accent); }
+    .btn-verify:active:not(:disabled) { transform: scale(.98); }
+    .btn-verify:disabled { background: var(--tce-border); color: var(--tce-muted); cursor: not-allowed; }
+
+    .btn-cancel {
+      background: var(--tce-light);
+      color: var(--tce-muted);
+      border: 1px solid var(--tce-border);
+      border-radius: 7px;
+      padding: 12px 18px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .18s;
+    }
+
+    .btn-cancel:hover { background: var(--tce-border); }
+
+    .modal-success {
+      text-align: center;
+      padding: 8px 0 4px;
+    }
+
+    .success-icon { font-size: 38px; margin-bottom: 12px; }
+
+    .success-msg {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #006644;
+      margin-bottom: 6px;
+    }
+
+    .success-name { font-size: 13px; color: var(--tce-muted); }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 880px) {
+      .nav-bar, .hero-content    { padding-left: 24px; padding-right: 24px; }
+      .section-apis              { padding: 56px 24px 48px; }
+      .api-grid                  { grid-template-columns: 1fr; }
+      .section-steps             { padding: 80px 24px; }
+      .steps-grid                { grid-template-columns: 1fr; }
+      .steps-grid::before        { display: none; }
+      .notice-wrap               { padding: 0 24px; margin-top: 48px; }
+      .footer                    { padding: 32px 24px 24px; }
+      .footer-inner              { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
-
 <body>
-    <a href="school_login.html">Go to School Login API Documentation</a>
-</body>
 
+  <!-- HERO -->
+  <header class="hero">
+    <nav class="nav-bar">
+      <a class="tce-logo" href="#">
+        <img class="logo-badge" src="../resources/images/tce_logo.png" alt="Tata ClassEdge" />
+        <div class="logo-text">
+          <span class="logo-name">Tata ClassEdge</span>
+          <span class="logo-sub">Partner Integration Hub</span>
+        </div>
+      </a>
+      <div class="nav-tag">API v2.0</div>
+    </nav>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Integration Documentation</div>
+      <h1 class="hero-title">
+        ERP Integration<br />
+        <span class="gradient-text">API Reference</span>
+      </h1>
+      <p class="hero-desc">
+        Complete interactive API documentation for integrating with the TCE ERP platform.
+        Select a module below to explore endpoints, request schemas, and live examples.
+      </p>
+    </div>
+  </header>
+
+  <!-- API MODULES -->
+  <section class="section-apis">
+    <div class="section-header">
+      <div class="section-label">Available Modules</div>
+      <h2 class="section-title">API Documentation</h2>
+      <p class="section-desc">Browse interactive Swagger docs for each integration module.</p>
+    </div>
+
+    <div class="api-grid">
+
+      <a class="api-card auth" href="../School_Login/School_Login.html">
+        <div class="card-badge">Authentication</div>
+        <div class="card-icon">🔐</div>
+        <div class="card-title">School Login API</div>
+        <p class="card-desc">
+          Authenticate your organization using Basic Authorization and obtain a Bearer token.
+          This is the required first step for all ERP integrations.
+        </p>
+        <div class="card-footer">
+          <span class="card-meta">v2.0 · Swagger UI</span>
+          <span class="card-cta">
+            Open docs
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="api-card teacher" href="../Teacher_Login/Teacher_Login.html">
+        <div class="card-badge">Teacher Auth</div>
+        <div class="card-icon">👨‍🏫</div>
+        <div class="card-title">Teacher Login API</div>
+        <p class="card-desc">
+          Provision and authenticate teacher accounts within the TCE platform.
+          Manage teacher sessions and access tokens for classroom integrations.
+        </p>
+        <div class="card-footer">
+          <span class="card-meta">v2.0 · Swagger UI</span>
+          <span class="card-cta">
+            Open docs
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="api-card config" href="../Academic_Year_Setup/AY_Setup.html">
+        <div class="card-badge">Configuration</div>
+        <div class="card-icon">📅</div>
+        <div class="card-title">Academic Year Setup API</div>
+        <p class="card-desc">
+          Configure and manage academic year parameters, term structures, and institutional
+          calendar data for your organization's ERP environment.
+        </p>
+        <div class="card-footer">
+          <span class="card-meta">v2.0 · Swagger UI</span>
+          <span class="card-cta">
+            Open docs
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- INTEGRATION STEPS -->
+  <section class="section-steps">
+    <div class="steps-dots"></div>
+    <div class="steps-inner">
+      <div class="steps-header">
+        <div class="steps-label">Getting Started</div>
+        <h2 class="steps-title">Integration Workflow</h2>
+        <p class="steps-sub">Three steps to go live with your TCE ERP integration.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-title">Request Credentials</div>
+          <p class="step-desc">
+            Contact the TCE integration team to receive your organization's
+            <code>Basic Token</code> and target environment details.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-title">Obtain Bearer Token</div>
+          <p class="step-desc">
+            Call the <strong style="color:rgba(255,255,255,.72)">School Login API</strong>
+            with your <code>Basic Token</code> to receive a <code>Bearer Token</code>
+            for all subsequent calls.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-title">Call Integration APIs</div>
+          <p class="step-desc">
+            Use your <code>Bearer Token</code> across Teacher Login, Academic Year Setup,
+            and other modules. Re-authenticate when the token expires.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTICE -->
+  <div class="notice-wrap">
+    <div class="notice-box">
+      <span class="notice-icon">ℹ️</span>
+      <div class="notice-text">
+        <strong>For Authorized Partners Only.</strong> This documentation is intended exclusively for
+        TCE integration partners. API credentials are environment-specific — ensure you are using
+        the correct tokens for your target environment (UAT / Production). For access requests or
+        technical support, contact
+        <a href="mailto:niteshg@tataclassedge.com">niteshg@tataclassedge.com</a>.
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img class="footer-logo" src="../resources/images/tce_logo.png" alt="Tata ClassEdge" />
+        <span class="footer-brand-text">Tata ClassEdge ERP</span>
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:niteshg@tataclassedge.com">niteshg@tataclassedge.com</a>
+        <div class="footer-sep"></div>
+        <span class="footer-link">API v2.0</span>
+        <div class="footer-sep"></div>
+        <span class="footer-link">Partner Documentation</span>
+      </div>
+    </div>
+    <p class="footer-copy">
+      &copy; 2026 Tata ClassEdge Limited &mdash; Confidential. Authorized Partners Only.
+    </p>
+  </footer>
+
+
+  <!-- ACCESS MODAL -->
+  <div class="modal-overlay" id="accessModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-head-icon">🔒</div>
+        <div>
+          <div class="modal-title">Partner Access Required</div>
+          <div class="modal-sub">Tata ClassEdge ERP</div>
+        </div>
+      </div>
+      <div class="modal-body">
+
+        <div id="modalDefault">
+          <p class="modal-desc">
+            Enter your 6-digit partner access code to view the API documentation.
+          </p>
+          <div class="otp-wrap">
+            <input class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+            <input class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+            <input class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+            <input class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+            <input class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+            <input class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+          </div>
+          <div class="modal-error" id="modalError"></div>
+          <div class="modal-actions">
+            <button class="btn-cancel" id="btnCancel">Cancel</button>
+            <button class="btn-verify" id="btnVerify" disabled>Verify Access</button>
+          </div>
+        </div>
+
+        <div id="modalSuccess" style="display:none;" class="modal-success">
+          <div class="success-icon">✅</div>
+          <div class="success-msg">Access Granted</div>
+          <div class="success-name" id="successName">Redirecting…</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      let pendingUrl = null;
+      const modal     = document.getElementById('accessModal');
+      const inputs    = Array.from(document.querySelectorAll('.digit-input'));
+      const btnVerify = document.getElementById('btnVerify');
+      const errorBox  = document.getElementById('modalError');
+
+      // Intercept every API card click
+      document.querySelectorAll('.api-card').forEach(card => {
+        card.addEventListener('click', e => {
+          e.preventDefault();
+          pendingUrl = card.getAttribute('href');
+          openModal();
+        });
+      });
+
+      document.getElementById('btnCancel').addEventListener('click', closeModal);
+      modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+      document.addEventListener('keydown', e => {
+        if (!modal.classList.contains('active')) return;
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Enter' && getCode().length === 6) verifyCode();
+      });
+
+      function openModal() {
+        modal.classList.add('active');
+        document.getElementById('modalDefault').style.display = '';
+        document.getElementById('modalSuccess').style.display = 'none';
+        clearDigits();
+        clearError();
+        setTimeout(() => inputs[0].focus(), 60);
+      }
+
+      function closeModal() {
+        modal.classList.remove('active');
+        pendingUrl = null;
+      }
+
+      // OTP input behaviour
+      inputs.forEach((inp, idx) => {
+        inp.addEventListener('input', e => {
+          const val = e.target.value.replace(/\D/g, '');
+          e.target.value = val ? val[0] : '';
+          e.target.classList.toggle('filled', !!e.target.value);
+          clearError();
+          if (val && idx < 5) inputs[idx + 1].focus();
+          syncBtn();
+        });
+
+        inp.addEventListener('keydown', e => {
+          if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+            inputs[idx - 1].value = '';
+            inputs[idx - 1].classList.remove('filled');
+            inputs[idx - 1].focus();
+            syncBtn();
+          }
+        });
+
+        inp.addEventListener('paste', e => {
+          e.preventDefault();
+          const text = (e.clipboardData || window.clipboardData)
+            .getData('text').replace(/\D/g, '').slice(0, 6);
+          inputs.forEach((box, i) => {
+            box.value = text[i] || '';
+            box.classList.toggle('filled', !!box.value);
+          });
+          inputs[Math.min(text.length, 5)].focus();
+          syncBtn();
+        });
+      });
+
+      btnVerify.addEventListener('click', verifyCode);
+
+
+      function getCode()   { return inputs.map(i => i.value).join(''); }
+      function syncBtn()   { btnVerify.disabled = getCode().length !== 6; }
+      function clearError(){ errorBox.textContent = ''; inputs.forEach(i => i.classList.remove('error-state')); }
+      function clearDigits(){ inputs.forEach(i => { i.value = ''; i.classList.remove('filled', 'error-state'); }); syncBtn(); }
+
+      // Keep in sync with resources/access-codes.json
+      const PARTNER_CODES = [
+        { name: 'Acme Corp',        code: '258258' },
+        { name: 'TechSoft Ltd',     code: '739204' },
+        { name: 'EduSystems Inc',   code: '156783' },
+        { name: 'BrightLearn Pvt',  code: '620548' },
+        { name: 'ScholarNet Co',    code: '394071' }
+      ];
+
+      function verifyCode() {
+        const code = getCode();
+        if (code.length !== 6) return;
+
+        btnVerify.disabled = true;
+        btnVerify.textContent = 'Verifying…';
+
+        const match = PARTNER_CODES.find(p => p.code === code);
+
+        if (match) {
+          document.getElementById('modalDefault').style.display = 'none';
+          document.getElementById('modalSuccess').style.display = '';
+          document.getElementById('successName').textContent = 'Welcome, ' + match.name;
+          setTimeout(() => { window.location.href = pendingUrl; }, 1300);
+        } else {
+          inputs.forEach(i => i.classList.add('error-state'));
+          errorBox.textContent = 'Invalid access code. Please check with your TCE contact.';
+          btnVerify.disabled = false;
+          btnVerify.textContent = 'Verify Access';
+        }
+      }
+    })();
+  </script>
+
+</body>
 </html>

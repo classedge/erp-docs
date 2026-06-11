@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TCE ERP Integration — Swagger UI</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
+    <style>
+        /* ── Brand & Layout ──────────────────────────────────────────── */
+        :root {
+            --tce-blue:   #0052CC;
+            --tce-dark:   #091E42;
+            --tce-accent: #0065FF;
+            --tce-light:  #F4F5F7;
+            --radius:     6px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--tce-light);
+            color: var(--tce-dark);
+        }
+
+        /* ── Top Header Bar ──────────────────────────────────────────── */
+        .tce-header {
+            background: var(--tce-dark);
+            color: #fff;
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.35);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .tce-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tce-header .logo svg {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+        }
+
+        .tce-header .brand {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: .4px;
+            line-height: 1.1;
+        }
+
+        .tce-header .brand span {
+            display: block;
+            font-size: .65rem;
+            font-weight: 400;
+            opacity: .7;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .tce-header .env-badge {
+            margin-left: auto;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 20px;
+            padding: 3px 14px;
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .8px;
+            color: #7FD2FF;
+        }
+
+        /* ── Swagger UI Overrides ────────────────────────────────────── */
+        #swagger-ui { max-width: 1200px; margin: 0 auto; padding: 24px 24px 60px; }
+
+        /* Hide default Swagger topbar */
+        .swagger-ui .topbar { display: none !important; }
+
+        /* Info block */
+        .swagger-ui .info {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.08);
+        }
+
+        .swagger-ui .info .title {
+            color: var(--tce-dark) !important;
+            font-size: 1.6rem !important;
+        }
+
+        /* Tag sections */
+        .swagger-ui .opblock-tag {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 10px 16px !important;
+            margin-top: 16px !important;
+            border-bottom: none !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,.07);
+            font-size: 1rem !important;
+            color: var(--tce-dark) !important;
+        }
+
+        .swagger-ui .opblock-tag:hover { background: #f0f4ff; }
+
+        /* Operation blocks */
+        .swagger-ui .opblock {
+            border-radius: var(--radius) !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,.07) !important;
+            margin-bottom: 8px !important;
+        }
+
+        .swagger-ui .opblock.opblock-post { border-color: var(--tce-accent) !important; }
+        .swagger-ui .opblock.opblock-post .opblock-summary { background: #EBF2FF !important; }
+        .swagger-ui .opblock.opblock-get  { border-color: #00875A !important; }
+        .swagger-ui .opblock.opblock-get  .opblock-summary { background: #E3FCEF !important; }
+
+        /* HTTP method pills */
+        .swagger-ui .opblock-summary-method {
+            border-radius: 4px !important;
+            font-weight: 700 !important;
+            min-width: 62px !important;
+            text-align: center !important;
+        }
+
+        /* Execute button */
+        .swagger-ui .btn.execute {
+            background: var(--tce-blue) !important;
+            border-color: var(--tce-blue) !important;
+            border-radius: 4px !important;
+        }
+
+        .swagger-ui .btn.execute:hover {
+            background: var(--tce-accent) !important;
+            border-color: var(--tce-accent) !important;
+        }
+
+        /* Authorize button */
+        .swagger-ui .btn.authorize {
+            border-color: var(--tce-blue) !important;
+            color: var(--tce-blue) !important;
+            border-radius: 4px !important;
+        }
+
+        /* Models section */
+        .swagger-ui section.models {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.07);
+        }
+
+        /* Scrollable body panel */
+        .swagger-ui .opblock-body { border-radius: 0 0 var(--radius) var(--radius); }
+
+        /* Footer */
+        .tce-footer {
+            text-align: center;
+            padding: 20px;
+            font-size: .75rem;
+            color: #5E6C84;
+            border-top: 1px solid #DFE1E6;
+            margin-top: 40px;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── TCE Header ─────────────────────────────────────────────── -->
+<header class="tce-header">
+    <div class="logo">
+        <!-- TCE "T" monogram in SVG -->
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="36" height="36" rx="8" fill="#0052CC"/>
+            <path d="M8 10h20v4H21v12h-6V14H8v-4z" fill="#ffffff"/>
+        </svg>
+        <div class="brand">
+            TCE ERP Integration
+            <span>Tata Class Edge · QA Environment</span>
+        </div>
+    </div>
+    <div class="env-badge">QA · cx-qa.devstudi.com</div>
+</header>
+
+<!-- ── Swagger UI Mount ───────────────────────────────────────── -->
+<div id="swagger-ui"></div>
+
+<!-- ── Footer ────────────────────────────────────────────────── -->
+<footer class="tce-footer">
+    TCE ERP Integration API · Generated from Postman collection <em>TCE_ERP_Integrarion_May_26</em> · © 2026 Tata Class Edge Limited
+</footer>
+
+<!-- ── Swagger UI Scripts ─────────────────────────────────────── -->
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js"></script>
+
+<script>
+    // ── Inline OpenAPI spec (no external file needed) ────────────
+    const spec = {
+        openapi: "3.0.0",
+        info: {
+            title: "TCE ERP Integration API",
+            version: "1.0.0",
+            description:
+                "TCE (Tata Class Edge) ERP Integration API — handles partner token verification, " +
+                "seat code validation, SSO client discovery, and token generation for the CX QA environment.\n\n" +
+                "**Base URL:** `https://cx-qa.devstudi.com`\n\n" +
+                "**Gateway URL pattern:** `/{gateway-context}/{service}/{auth-type}/api/...`\n\n" +
+                "| Auth type | Meaning |\n|---|---|\n| `0` | Public |\n| `1` | Frontend |\n| `2` | Internal |\n| `31` | Cookie/Seat-code |"
+        },
+        servers: [
+            { url: "https://cx-qa.devstudi.com",          description: "QA Environment" },
+            { url: "https://cx-dev-connect.devstudi.com",  description: "Dev Connect Environment" }
+        ],
+        tags: [
+            { name: "ERP Authentication",  description: "Partner token & OTP-based ERP flows" },
+            { name: "SSO Authentication",  description: "Single Sign-On flows for the CX platform" }
+        ],
+        paths: {
+
+            "/guide/rule-api/0/api/v1/erp/verify": {
+                post: {
+                    operationId: "otpAndCreateTeacher",
+                    summary: "OTP & Create Teacher",
+                    description:
+                        "Verifies the partner OTP and creates/registers the teacher in the ERP system.\n\n" +
+                        "The `partnerToken` is the encrypted token returned by `GET /erp/token?seatcode=…`.\n\n" +
+                        "The `otp` is a short numeric code shared out-of-band with the partner for this registration step.\n\n" +
+                        "On success returns an autologin `otp` + `username` pair to be used directly in `POST /sso/token`.\n\n" +
+                        "**Step order:** `ClientId` → `Verify Seatcode` → → **OTP & Create Teacher** → `TC Token`\n\n" ,
+                    tags: ["ERP Authentication"],
+                    servers: [
+                        { url: "https://cx-dev-connect.devstudi.com", description: "Dev Connect Environment" }
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/OtpVerifyRequest" },
+                                example: {
+                                    partnerToken: "9e835e55d798e5c723f1001b55534f9c4ee2045a84e8775737faba594c21ae19ecd2275493cfbedfc3e5c713d43fbcb24b57da711c4b5a50910eefedf6cfd19f223cc0b98a5af1c2f1916ddf22ecb74abb13c055020878e430815c9fdd5ba321dc31e95f529a1439f996be640d0f30a546e3044f21d6358363a18d878f989fb3",
+                                    otp: "15442"
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        "200": {
+                            description: "OTP verified; teacher created/registered. Returns autologin `otp` + `username` for `POST /sso/token`.",
+                            content: {
+                                "application/json": {
+                                    schema: { $ref: "#/components/schemas/VerifyUserResponse" },
+                                    example: {
+                                        otp:      "1063650",
+                                        username: "919728282929"
+                                    }
+                                }
+                            }
+                        },
+                        "400": { $ref: "#/components/responses/BadRequest" },
+                        "401": { $ref: "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+
+            "/guide/rule-api/0/api/v1/erp/token": {
+                post: {
+                    operationId: "verifyUser",
+                    summary: "Verify User",
+                    description:
+                        "Validates the partner token and returns an ERP session token.\n\n" +
+                        "Optionally accepts a `seatcode` query param to scope the validation to an assigned seat.\n\n",
+                    tags: ["ERP Authentication"],
+                    parameters: [
+                        {
+                            name: "seatcode",
+                            in: "query",
+                            required: false,
+                            description: "Seat code (ASSIGNED) to scope the token request.",
+                            schema: { type: "string" },
+                            example: "MMS933279"
+                        }
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/VerifyUserRequest" },
+                                example: {
+                                    partnerToken: "9e835e55d798e5c723f1001b55534f9c4ee2045a84e8775737faba594c21ae19ecd2275493cfbedfc3e5c713d43fbcb24b57da711c4b5a50910eefedf6cfd19f223cc0b98a5af1c2f1916ddf22ecb74a2d6d9e911dcca59d87a45fa79922823e47c2625b0b9afc16a10eb7034363d6256075fb63dc9948ae13e750d2016f1f99"
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        "200": {
+                            description: "User verified; returns OTP and username for the next authentication step.",
+                            content: {
+                                "application/json": {
+                                    schema: { $ref: "#/components/schemas/VerifyUserResponse" },
+                                    example: {
+                                        otp: "6057487",
+                                        username: "919728282929"
+                                    }
+                                }
+                            }
+                        },
+                        "400": { $ref: "#/components/responses/BadRequest" },
+                        "401": { $ref: "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+
+            "/guide/rule-api/31/api/v1/erp/token": {
+                get: {
+                    operationId: "verifySeatcodeCookie",
+                    summary: "Verify Seatcode Cookie",
+                    description:
+                        "Validates a seat code using HTTP Basic authentication.\n\n" +
+                        "The seat code identifies a student/teacher seat assignment in the ERP.\n\n",
+                    tags: ["ERP Authentication"],
+                    security: [{ basicAuth: [] }],
+                    parameters: [
+                        {
+                            name: "seatcode",
+                            in: "query",
+                            required: true,
+                            description: "The seat code to verify.",
+                            schema: { type: "string" },
+                            example: "GBS937091"
+                        }
+                    ],
+                    responses: {
+                        "200": {
+                            description: "Seat code is valid; returns associated partner token.",
+                            content: {
+                                "application/json": {
+                                    schema: { $ref: "#/components/schemas/TokenResponse" },
+                                    example: {
+                                        partnerToken: "9e835e55d798e5c723f1001b55534f9c4ee2045a84e8775737faba594c21ae19ecd2275493cfbedfc3e5c713d43fbcb24b57da711c4b5a50910eefedf6cfd19f223cc0b98a5af1c2f1916ddf22ecb74a2d6d9e911dcca59d87a45fa79922823e47c2625b0b9afc16a10eb7034363d6256075fb63dc9948ae13e750d2016f1f99"
+                                    }
+                                }
+                            }
+                        },
+                        "400": { $ref: "#/components/responses/BadRequest" },
+                        "401": { $ref: "#/components/responses/Unauthorized" },
+                        "404": { $ref: "#/components/responses/NotFound" }
+                    }
+                }
+            },
+
+            "/connect/tce-auth-api/0/api/v1/sso/clientid": {
+                get: {
+                    operationId: "getClientId",
+                    summary: "Get SSO Client ID",
+                    description:
+                        "Public discovery endpoint — returns platform session configuration.\n\n" +
+                        "⚠️ **Important:** The response sets a `ctoken` cookie in the **response headers** (`Set-Cookie`).\n\n" +
+                        "You **must** copy that `ctoken` value and pass it as a `Cookie: ctoken=<value>` header in the subsequent `POST /sso/token` call.\n\n" +
+                        "**Step order:** → **ClientId** → `Verify Seatcode` → `Verify User` → `TC Token`\n\n",
+                    tags: ["SSO Authentication"],
+                    servers: [
+                        { url: "https://cx-dev-connect.devstudi.com", description: "Dev Connect Environment" }
+                    ],
+                    responses: {
+                        "200": {
+                            description: "Session config returned. ⚠️ Copy the `ctoken` value from the `Set-Cookie` response header for use in `POST /sso/token`.",
+                            headers: {
+                                "Set-Cookie": {
+                                    description: "CSRF cookie — extract the `ctoken=<value>` part and pass it as the `Cookie` header in `POST /guide/auth-api/0/api/1/sso/token`.",
+                                    schema: { type: "string" },
+                                    example: "ctoken=f5436a205d108d3a9bd6885901e22ae026e249fe5ed6856e1c0ba1481e267ed11f485cb9b9d1e76435e61a1f1739e8212b0fb3190328093d; Path=/; HttpOnly; SameSite=Strict"
+                                }
+                            },
+                            content: {
+                                "application/json": {
+                                    schema: { $ref: "#/components/schemas/ClientIdResponse" },
+                                    example: {
+                                        apiVersion:     "1",
+                                        sessionTimeout: "300",
+                                        clientTimeout:  "1800",
+                                        defaultSchool:  "",
+                                        tstamp:         1779825430021
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+
+            "/guide/auth-api/0/api/1/sso/token": {
+                post: {
+                    operationId: "getTCToken",
+                    summary: "TC Token (OTP Login)",
+                    description:
+                        "Exchanges a `username` + `otp` pair for a TC (Teacher Connect) access token.\n\n" +
+                        "Uses `grant_type=auto_otp` for OTP-based passwordless login.\n\n" +
+                        "**Step order:** `ClientId` → `Verify Seatcode` → `Verify User` → **TC Token**\n\n" +
+                        "The `otp` and `username` values come directly from the `POST /erp/token` response.\n\n" +
+                        "The `ctoken` must be obtained from the `Set-Cookie` header of the `GET /sso/clientid` call.\n\n",
+                    tags: ["SSO Authentication"],
+                    servers: [
+                        { url: "https://cx-dev-connect.devstudi.com", description: "Dev Connect Environment" }
+                    ],
+                    parameters: [
+                        {
+                            name: "Cookie",
+                            in: "header",
+                            required: true,
+                            description: "CSRF cookie obtained from `GET /sso/clientid` — must contain `ctoken=<value>`.",
+                            schema: { type: "string" },
+                            example: "ctoken=f5436a205d108d3a9bd6885901e22ae026e249fe5ed6856e1c0ba1481e267ed11f485cb9b9d1e76435e61a1f1739e8212b0fb3190328093d"
+                        }
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            "application/x-www-form-urlencoded": {
+                                schema: { $ref: "#/components/schemas/TCTokenRequest" },
+                                example: {
+                                    username: "919728282929",
+                                    otp: "6057487",
+                                    grant_type: "auto_otp"
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        "200": {
+                            description: "Access token issued successfully.",
+                            content: {
+                                "application/json": {
+                                    schema: { $ref: "#/components/schemas/OAuthTokenResponse" },
+                                    example: {
+                                        access_token:  "fc212965-27f2-4cb6-8a28-e83579d87dfe",
+                                        token_type:    "bearer",
+                                        refresh_token: "9250730b-9259-4d3d-8eaa-d2a847b9bfc5",
+                                        expires_in:    300,
+                                        scope:         "all",
+                                        mode:          "ONLINE",
+                                        tstamp:        1779825824175
+                                    }
+                                }
+                            }
+                        },
+                        "400": { $ref: "#/components/responses/BadRequest" },
+                        "401": { $ref: "#/components/responses/Unauthorized" }
+                    }
+                }
+            }
+
+        },
+
+        components: {
+            securitySchemes: {
+                basicAuth: {
+                    type: "http",
+                    scheme: "basic",
+                    description: "HTTP Basic Auth — Base64-encoded `username:password` in the Authorization header."
+                }
+            },
+            schemas: {
+                OtpVerifyRequest: {
+                    type: "object",
+                    required: ["partnerToken", "otp"],
+                    properties: {
+                        partnerToken: {
+                            type: "string",
+                            description: "Encrypted partner token issued by TCE to the ERP system."
+                        },
+                        otp: {
+                            type: "integer",
+                            description: "One-time password sent to the teacher's registered mobile/email.",
+                            example: 23539
+                        }
+                    }
+                },
+                VerifyUserRequest: {
+                    type: "object",
+                    required: ["partnerToken"],
+                    properties: {
+                        partnerToken: {
+                            type: "string",
+                            description: "Encrypted partner token for user verification."
+                        }
+                    }
+                },
+                VerifyUserResponse: {
+                    type: "object",
+                    properties: {
+                        otp: {
+                            type: "string",
+                            description: "One-time password to be used in the next authentication step (TC Token).",
+                            example: "6057487"
+                        },
+                        username: {
+                            type: "string",
+                            description: "User's mobile number with country code associated with the partner token.",
+                            example: "919728282929"
+                        }
+                    }
+                },
+                TCTokenRequest: {
+                    type: "object",
+                    required: ["username", "otp", "grant_type"],
+                    properties: {
+                        username: {
+                            type: "string",
+                            description: "User's mobile number with country code (e.g. `919728282929`).",
+                            example: "919728282929"
+                        },
+                        otp: {
+                            type: "string",
+                            description: "One-time password received on the mobile number.",
+                            example: "5598173"
+                        },
+                        grant_type: {
+                            type: "string",
+                            description: "OAuth 2.0 grant type.",
+                            enum: ["auto_otp"]
+                        }
+                    }
+                },
+                TokenResponse: {
+                    type: "object",
+                    properties: {
+                        partnerToken: { type: "string", description: "Encrypted partner token returned after seat code verification." },
+                        token:        { type: "string", description: "Session or access token." },
+                        expiresIn:    { type: "integer", description: "Token validity in seconds." },
+                        status:       { type: "string" }
+                    }
+                },
+                OAuthTokenResponse: {
+                    type: "object",
+                    properties: {
+                        access_token:  { type: "string",  description: "Bearer access token for subsequent API calls.",       example: "fc212965-27f2-4cb6-8a28-e83579d87dfe" },
+                        token_type:    { type: "string",  description: "Token type — always `bearer`.",                       example: "bearer" },
+                        refresh_token: { type: "string",  description: "Token used to obtain a new access token on expiry.", example: "9250730b-9259-4d3d-8eaa-d2a847b9bfc5" },
+                        expires_in:    { type: "integer", description: "Access token validity in seconds.",                   example: 300 },
+                        scope:         { type: "string",  description: "Granted OAuth scope.",                                example: "all" },
+                        mode:          { type: "string",  description: "User session mode.",                                  example: "ONLINE" },
+                        tstamp:        { type: "integer", format: "int64", description: "Server-side timestamp (epoch ms) when the token was issued.", example: 1779825824175 }
+                    }
+                },
+                ClientIdResponse: {
+                    type: "object",
+                    properties: {
+                        apiVersion:     { type: "string",  description: "Platform API version.",                                          example: "1" },
+                        sessionTimeout: { type: "string",  description: "Session idle timeout in seconds.",                              example: "300" },
+                        clientTimeout:  { type: "string",  description: "Client (browser) timeout in seconds.",                         example: "1800" },
+                        defaultSchool:  { type: "string",  description: "Default school code; empty string if not pre-configured.",      example: "" },
+                        tstamp:         { type: "integer", format: "int64", description: "Server timestamp (epoch ms) of the response.", example: 1779825430021 }
+                    }
+                },
+                GenericSuccessResponse: {
+                    type: "object",
+                    properties: {
+                        status:  { type: "string", example: "success" },
+                        message: { type: "string" }
+                    }
+                },
+                ErrorResponse: {
+                    type: "object",
+                    properties: {
+                        status:    { type: "integer" },
+                        error:     { type: "string" },
+                        message:   { type: "string" },
+                        timestamp: { type: "string", format: "date-time" }
+                    }
+                }
+            },
+            responses: {
+                BadRequest: {
+                    description: "Bad request — invalid parameters or body.",
+                    content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+                },
+                Unauthorized: {
+                    description: "Unauthorized — missing or invalid credentials.",
+                    content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+                },
+                NotFound: {
+                    description: "Resource not found.",
+                    content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+                }
+            }
+        }
+    };
+
+    // ── Mount Swagger UI ─────────────────────────────────────────
+    window.onload = () => {
+        SwaggerUIBundle({
+            spec,
+            dom_id: "#swagger-ui",
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+            layout: "StandaloneLayout",
+            defaultModelsExpandDepth: 1,
+            defaultModelExpandDepth: 2,
+            docExpansion: "list",
+            filter: true,
+            showExtensions: true,
+            showCommonExtensions: true
+        });
+    };
+</script>
+</body>
+</html>

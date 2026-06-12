@@ -1066,18 +1066,20 @@
       function clearError(){ errorBox.textContent = ''; inputs.forEach(i => i.classList.remove('error-state')); }
       function clearDigits(){ inputs.forEach(i => { i.value = ''; i.classList.remove('filled', 'error-state'); }); syncBtn(); }
 
-      // Keep in sync with resources/access-codes.json
-      const PARTNER_CODES = [
-        { name: 'Acme Corp',        code: '258258' },
-        { name: 'TechSoft Ltd',     code: '739204' },
-        { name: 'EduSystems Inc',   code: '156783' },
-        { name: 'BrightLearn Pvt',  code: '620548' },
-        { name: 'ScholarNet Co',    code: '394071' }
-      ];
+      let PARTNER_CODES = null;
+      fetch('resources/access-codes.json')
+        .then(r => r.json())
+        .then(data => { PARTNER_CODES = data.partners; })
+        .catch(() => { PARTNER_CODES = []; });
 
       function verifyCode() {
         const code = getCode();
         if (code.length !== 6) return;
+
+        if (!PARTNER_CODES) {
+          errorBox.textContent = 'Access codes still loading — please try again.';
+          return;
+        }
 
         btnVerify.disabled = true;
         btnVerify.textContent = 'Verifying…';

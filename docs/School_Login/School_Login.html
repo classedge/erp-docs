@@ -1,158 +1,353 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>if(!sessionStorage.getItem('tce_docs_access')){window.location.replace('../index.html');}}</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>School Login API</title>
+  <title>School Login API — TCE ERP Partner Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
   <style>
-    body { margin: 0; padding: 0; }
+    :root {
+      --tce-dark: #091E42; --tce-blue: #0052CC; --tce-accent: #0065FF;
+      --tce-muted: #5E6C84; --tce-border: #DFE1E6; --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #EFF1F5; color: var(--tce-dark);
+      line-height: 1.65; -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .tce-header {
+      background: var(--tce-dark); height: 60px;
+      display: flex; align-items: center; padding: 0 48px;
+      position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 2px 12px rgba(0,0,0,.4);
+    }
+    .back-link {
+      display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,.5); text-decoration: none;
+      font-size: 12px; font-weight: 500; padding-right: 20px;
+      border-right: 1px solid rgba(255,255,255,.1); height: 36px;
+      transition: color .15s;
+    }
+    .back-link:hover { color: rgba(255,255,255,.85); }
+    .back-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .header-brand {
+      padding: 0 20px; display: flex; flex-direction: column; line-height: 1.25;
+      border-right: 1px solid rgba(255,255,255,.1); height: 36px; justify-content: center;
+    }
+    .brand-name { font-family: 'IBM Plex Serif', serif; font-weight: 700; font-size: 14px; color: #fff; }
+    .brand-sub  { font-size: 9.5px; color: rgba(255,255,255,.38); letter-spacing: 0.7px; text-transform: uppercase; }
+    .page-title { padding-left: 20px; font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,.75); }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .pill { border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.4px; }
+    .pill-blue  { background: rgba(0,101,255,.2);    border: 1px solid rgba(0,101,255,.35); color: #7ab2ff; }
+    .pill-white { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.4); }
+
+    /* ── Environment Info ── */
+    .env-info { background: #fff; border-bottom: 1px solid var(--tce-border); padding: 11px 48px; }
+    .env-inner { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 28px; }
+    .env-heading { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--tce-muted); }
+    .env-row { display: flex; align-items: center; gap: 7px; }
+    .env-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot-dev  { background: #FF8B00; }
+    .dot-qa   { background: #36B37E; }
+    .dot-prod { background: #0052CC; }
+    .env-lbl  { font-size: 10.5px; font-weight: 700; color: var(--tce-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+    .env-val  { font-family: 'SF Mono','Fira Code','Consolas',monospace; font-size: 12px; color: var(--tce-blue); background: #EBF2FF; padding: 2px 8px; border-radius: 4px; }
+    .env-note { font-size: 12px; color: var(--tce-muted); }
+    .env-note strong { color: var(--tce-dark); font-weight: 600; }
+    .env-sep  { width: 1px; height: 18px; background: var(--tce-border); }
+
+    /* ── Notice ── */
+    .notice { padding: 9px 48px; font-size: 12.5px; line-height: 1.58; }
+    .notice-warning { background: #FFF8E6; border-bottom: 1px solid #FFE380; color: #7A4100; }
+    .notice-info    { background: #EAF3FF; border-bottom: 1px solid #B3CEFF; color: #0747A6; }
+    .notice strong  { font-weight: 600; }
+
+    /* ── Swagger Wrapper ── */
+    .swagger-wrap { max-width: 1240px; margin: 0 auto; padding: 32px 48px 80px; }
+    #swagger-ui { background: transparent; }
+
+    /* ── Swagger UI Overrides ── */
+    .swagger-ui .topbar { display: none !important; }
+    .swagger-ui .info {
+      background: #fff !important; border-radius: var(--radius) !important;
+      padding: 28px 32px !important; margin-bottom: 28px !important;
+      box-shadow: 0 1px 6px rgba(9,30,66,.09) !important;
+    }
+    .swagger-ui .info .title {
+      font-family: 'IBM Plex Serif', serif !important; font-size: 24px !important;
+      font-weight: 700 !important; color: var(--tce-dark) !important; line-height: 1.2 !important;
+    }
+    .swagger-ui .info p, .swagger-ui .info .description p {
+      font-family: 'IBM Plex Sans', sans-serif !important; font-size: 14px !important;
+      line-height: 1.72 !important; color: #42526E !important; margin-bottom: 10px !important;
+    }
+    .swagger-ui .info h2, .swagger-ui .info h3 {
+      font-family: 'IBM Plex Serif', serif !important; font-weight: 600 !important;
+      font-size: 16px !important; color: var(--tce-dark) !important; margin: 18px 0 8px !important;
+    }
+    .swagger-ui .info table { font-size: 13px !important; border-collapse: collapse !important; margin: 12px 0 !important; }
+    .swagger-ui .info table th {
+      background: #F4F5F7 !important; padding: 7px 14px !important; font-weight: 600 !important;
+      font-size: 12px !important; text-align: left !important; border: 1px solid var(--tce-border) !important; color: var(--tce-dark) !important;
+    }
+    .swagger-ui .info table td { padding: 7px 14px !important; border: 1px solid var(--tce-border) !important; font-size: 13px !important; color: #344563 !important; }
+    .swagger-ui .info code, .swagger-ui .markdown code {
+      font-family: 'SF Mono','Fira Code','Consolas',monospace !important; font-size: 12px !important;
+      background: #EBF2FF !important; color: #0747A6 !important; padding: 2px 6px !important; border-radius: 4px !important;
+    }
+    .swagger-ui .info blockquote, .swagger-ui .markdown blockquote {
+      border-left: 3px solid var(--tce-blue); background: #F4F7FF;
+      padding: 10px 16px; border-radius: 0 6px 6px 0; margin: 12px 0;
+      font-size: 13.5px !important; line-height: 1.65 !important; color: #344563 !important;
+    }
+    .swagger-ui .opblock-tag {
+      background: #fff !important; border-radius: var(--radius) !important; padding: 14px 20px !important;
+      margin-top: 20px !important; border-bottom: none !important;
+      box-shadow: 0 1px 3px rgba(9,30,66,.08) !important;
+      font-family: 'IBM Plex Serif', serif !important; font-size: 15px !important;
+      font-weight: 700 !important; color: var(--tce-dark) !important;
+    }
+    .swagger-ui .opblock-tag:hover { background: #F0F4FF !important; }
+    .swagger-ui .opblock-tag small { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 12.5px !important; font-weight: 400 !important; color: var(--tce-muted) !important; }
+    .swagger-ui .opblock { border-radius: var(--radius) !important; box-shadow: 0 1px 3px rgba(9,30,66,.08) !important; margin-bottom: 10px !important; }
+    .swagger-ui .opblock .opblock-summary { padding: 13px 20px !important; }
+    .swagger-ui .opblock-summary-description { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 14px !important; font-weight: 500 !important; color: #344563 !important; }
+    .swagger-ui .opblock.opblock-post { border-color: var(--tce-accent) !important; }
+    .swagger-ui .opblock.opblock-post .opblock-summary { background: #EBF2FF !important; }
+    .swagger-ui .opblock.opblock-get  { border-color: #00875A !important; }
+    .swagger-ui .opblock.opblock-get  .opblock-summary { background: #E3FCEF !important; }
+    .swagger-ui .opblock-summary-method {
+      border-radius: 5px !important; font-weight: 700 !important;
+      min-width: 68px !important; text-align: center !important; font-size: 12px !important; letter-spacing: 0.5px !important;
+    }
+    .swagger-ui .markdown p { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 14px !important; line-height: 1.7 !important; color: #344563 !important; }
+    .swagger-ui .markdown table { font-size: 13px !important; border-collapse: collapse !important; }
+    .swagger-ui .markdown table th { background: #F4F5F7 !important; padding: 7px 14px !important; font-weight: 600 !important; border: 1px solid var(--tce-border) !important; }
+    .swagger-ui .markdown table td { padding: 7px 14px !important; border: 1px solid var(--tce-border) !important; }
+    .swagger-ui .parameters-col_description { font-size: 13.5px !important; line-height: 1.65 !important; }
+    .swagger-ui .parameter__name { font-family: 'SF Mono','Fira Code','Consolas',monospace !important; font-size: 13px !important; }
+    .swagger-ui .parameter__type { font-size: 11.5px !important; color: var(--tce-muted) !important; }
+    .swagger-ui .response-col_description { font-size: 13.5px !important; line-height: 1.65 !important; }
+    .swagger-ui .response-col_status { font-size: 14px !important; font-weight: 600 !important; }
+    .swagger-ui .btn.execute {
+      background: var(--tce-blue) !important; border-color: var(--tce-blue) !important;
+      border-radius: 5px !important; font-weight: 600 !important; font-size: 14px !important; padding: 8px 20px !important;
+    }
+    .swagger-ui .btn.execute:hover { background: var(--tce-accent) !important; border-color: var(--tce-accent) !important; }
+    .swagger-ui .btn.authorize { border-color: var(--tce-blue) !important; color: var(--tce-blue) !important; border-radius: 5px !important; font-weight: 600 !important; }
+    .swagger-ui section.models { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: 0 1px 3px rgba(9,30,66,.07); margin-top: 20px; }
+    .swagger-ui .model-title { font-family: 'IBM Plex Serif', serif !important; font-size: 15px !important; }
+    .swagger-ui .scheme-container {
+      background: #F8FAFC !important; border: 1px solid var(--tce-border) !important;
+      border-radius: var(--radius) !important; padding: 14px 24px !important; margin-bottom: 24px !important; box-shadow: none !important;
+    }
+
+    /* ── Footer ── */
+    .tce-footer { background: var(--tce-dark); padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .footer-left { font-size: 11.5px; color: rgba(255,255,255,.28); }
+    .footer-left a { color: rgba(255,255,255,.45); text-decoration: none; }
+    .footer-left a:hover { color: rgba(255,255,255,.75); }
+    .footer-right { display: flex; align-items: center; gap: 10px; }
+    .confidential { background: rgba(255,86,48,.14); border: 1px solid rgba(255,86,48,.25); border-radius: 4px; padding: 3px 8px; font-size: 9.5px; font-weight: 700; color: #FF8F73; letter-spacing: 1.1px; text-transform: uppercase; }
+    .footer-copy { font-size: 11.5px; color: rgba(255,255,255,.2); }
+
+    @media (max-width: 768px) {
+      .tce-header, .env-info, .notice, .swagger-wrap, .tce-footer { padding-left: 20px !important; padding-right: 20px !important; }
+      .page-title { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div id="swagger-ui"></div>
 
-  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
-  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
-  <style>
-    body { margin: 0; padding: 0; background: #fff; }
-  </style>
-  <script>
-    const spec = {
-      "swagger": "2.0",
-      "info": {
-        "title": "School Login API",
-        "description": "API for authenticating a school/organization and obtaining a bearer token using Basic authorization.",
-        "version": "2.0",
-        "contact": {
-          "email": "niteshg@tataclassedge.com"
-        }
-      },
-      // "host": "{{base_url}}",
-      // "basePath": "/guide/rule-api/31",
-      "schemes": ["https"],
-      "tags": [
-        {
-          "name": "Authentication",
-          "description": "Operations related to ERP token generation"
-        }
-      ],
-      "paths": {
-        "/guide/rule-api/31/api/v2/erp/token": {
-          "post": {
-            "tags": ["Authentication"],
-            "summary": "School Login",
-            "description": "Authenticates an organization using a static Basic authorization token and returns a bearer token (Basic_Token) for subsequent API calls.",
-            "operationId": "schoolLogin",
-            "consumes": ["application/json"],
-            "produces": ["text/plain", "application/json"],
-            "parameters": [
-              {
-                "in": "header",
-                "name": "Authorization",
-                "description": "Static Basic authorization token. Format: `Basic <Static_Basic_Token>`",
-                "required": true,
+<header class="tce-header">
+  <a class="back-link" href="../index.html">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Integration Hub
+  </a>
+  <div class="header-brand">
+    <span class="brand-name">Tata ClassEdge</span>
+    <span class="brand-sub">ERP Partner API</span>
+  </div>
+  <span class="page-title">School Login API</span>
+  <div class="header-right">
+    <span class="pill pill-blue">Authentication</span>
+    <span class="pill pill-white">v2.0</span>
+  </div>
+</header>
+
+<div class="env-info">
+  <div class="env-inner">
+    <span class="env-heading">Environments</span>
+    <div class="env-row">
+      <span class="env-dot dot-dev"></span>
+      <span class="env-lbl">Dev</span>
+      <span class="env-val">cx-dev-erp.devstudi.com</span>
+      <span class="env-note">School ID: <strong>broo-mah-mum</strong></span>
+    </div>
+    <span class="env-sep"></span>
+    <div class="env-row">
+      <span class="env-dot dot-qa"></span>
+      <span class="env-lbl">QA</span>
+      <span class="env-val">cx-qa-erp.devstudi.com</span>
+      <span class="env-note">School ID: <strong>bddc-pun-ahm</strong></span>
+    </div>
+    <span class="env-sep"></span>
+    <div class="env-row">
+      <span class="env-dot dot-prod"></span>
+      <span class="env-lbl">Prod</span>
+      <span class="env-note">Host and School ID provided upon production onboarding</span>
+    </div>
+  </div>
+</div>
+
+<div class="notice notice-info">
+  <strong>Security Requirement:</strong> All API requests must originate from Entrar's registered and whitelisted IP addresses. Requests from non-whitelisted sources will be rejected at the gateway level, regardless of token validity. Contact the TCE integration team to register your server IPs prior to testing.
+</div>
+
+<div class="swagger-wrap">
+  <div id="swagger-ui"></div>
+</div>
+
+<footer class="tce-footer">
+  <div class="footer-left">
+    &copy; 2026 Tata ClassEdge Limited &mdash;
+    <a href="mailto:niteshg@tataclassedge.com">niteshg@tataclassedge.com</a>
+  </div>
+  <div class="footer-right">
+    <span class="confidential">Confidential</span>
+    <span class="footer-copy">Authorized Partners Only</span>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+<script>
+  const spec = {
+    "swagger": "2.0",
+    "info": {
+      "title": "School Login API",
+      "description": "Authenticates a school or organization against the TCE platform using a static Basic Authorization token, and returns a session Bearer token required for all downstream API calls.\n\n**This is the mandatory first step in the ERP integration workflow.** The Bearer token returned by this endpoint must be included in the `Authorization` header of every subsequent request.\n\n## Authentication Flow\n1. Include your **Static Basic Token** (issued by TCE) in the `Authorization` header as `Basic <Static_Basic_Token>`.\n2. Provide the environment-specific **School ID** as the `username` and set `grant_type` to `org_auto` in the request body.\n3. On a successful response, the platform returns a new **Bearer Token**.\n4. Include this Bearer Token as `Authorization: Bearer <token>` in all subsequent API calls.\n5. Re-authenticate using this endpoint when the token expires.\n\n## Environments\n| Environment | Host | School ID |\n|---|---|---|\n| Dev | `cx-dev-erp.devstudi.com` | `broo-mah-mum` |\n| QA | `cx-qa-erp.devstudi.com` | `bddc-pun-ahm` |\n| Production | *Provided upon production onboarding* | *Provided upon production onboarding* |\n\n> **Note:** API credentials are environment-specific. Tokens generated in Dev are not valid in QA or Production environments.",
+      "version": "2.0",
+      "contact": {
+        "email": "niteshg@tataclassedge.com"
+      }
+    },
+    "schemes": ["https"],
+    "tags": [
+      {
+        "name": "Authentication",
+        "description": "ERP token generation — required as the first step of every integration session"
+      }
+    ],
+    "paths": {
+      "/guide/rule-api/31/api/v2/erp/token": {
+        "post": {
+          "tags": ["Authentication"],
+          "summary": "Generate Bearer Token",
+          "description": "Authenticates the organization using the provided Static Basic Token and returns a session Bearer token.\n\nThe returned token must be passed as `Authorization: Bearer <token>` in all subsequent API requests within the same integration session.\n\n**Token Lifecycle:** Bearer tokens are session-scoped. When a token expires, call this endpoint again with the same Static Basic Token to obtain a fresh Bearer token.",
+          "operationId": "schoolLogin",
+          "consumes": ["application/json"],
+          "produces": ["text/plain", "application/json"],
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "description": "Static Basic Authorization token issued by TCE. Format: `Basic <Static_Basic_Token>`",
+              "required": true,
+              "type": "string",
+              "default": "Basic {{Static_Basic_Token}}"
+            },
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Organization login credentials.",
+              "required": true,
+              "schema": { "$ref": "#/definitions/LoginRequest" }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Authentication successful. Returns the Bearer token as plain text. Pass this value as `Authorization: Bearer <token>` in all subsequent requests.",
+              "schema": {
                 "type": "string",
-                "default": "Basic {{Static_Basic_Token}}"
-              },
-              {
-                "in": "body",
-                "name": "body",
-                "description": "Login credentials for the organization.",
-                "required": true,
-                "schema": {
-                  "$ref": "#/definitions/LoginRequest"
-                }
+                "example": "eyJhbGciOiJIUzI1NiJ9.eyJzY2hvb2xJZCI6ImJkZGMtcHVuLWFobSJ9..."
               }
-            ],
-            "responses": {
-              "200": {
-                "description": "Authentication successful. Returns the bearer token as plain text.",
-                "schema": {
-                  "type": "string",
-                  "example": "{{Basic_Token}}"
-                }
-              },
-              "400": {
-                "description": "Bad Request — Organization ID is incorrect or not found.",
-                "schema": {
-                  "$ref": "#/definitions/BadRequestResponse"
-                }
-              },
-              "500": {
-                "description": "Internal Server Error — Invalid Static Basic Token or a server-side issue. Please contact the TCE team for assistance.",
-                "schema": {
-                  "$ref": "#/definitions/InternalServerErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "definitions": {
-        "BadRequestResponse": {
-          "type": "object",
-          "properties": {
-            "errorCode": {
-              "type": "integer",
-              "example": 1
             },
-            "errorMessage": {
-              "type": "string",
-              "example": "Institution not found"
-            }
-          }
-        },
-        "InternalServerErrorResponse": {
-          "type": "object",
-          "properties": {
-            "errorCode": {
-              "type": "integer",
-              "example": 500
+            "400": {
+              "description": "Bad Request — The organization ID (`username`) is incorrect or is not registered on the TCE platform.",
+              "schema": { "$ref": "#/definitions/ErrorResponse" }
             },
-            "errorMessage": {
-              "type": "string",
-              "example": "WEB-MjAyNi0wNi0wOSAxMjo1MDo1OTo0MjQ="
-            }
-          }
-        },
-        "LoginRequest": {
-          "type": "object",
-          "required": ["username", "grant_type"],
-          "properties": {
-            "username": {
-              "type": "string",
-              "description": "The organization ID used as the login username.",
-              "example": "{{orgId}}"
+            "401": {
+              "description": "Unauthorized — The Static Basic Token is invalid or missing. Verify that the `Authorization` header is set to `Basic <Static_Basic_Token>` using the token issued by the TCE integration team.",
+              "schema": { "$ref": "#/definitions/ErrorResponse" }
             },
-            "grant_type": {
-              "type": "string",
-              "description": "The grant type for the authentication flow.",
-              "example": "org_auto"
+            "500": {
+              "description": "Internal Server Error — An unexpected error occurred on the server. Contact the TCE integration team and provide the error reference code included in the response body.",
+              "schema": { "$ref": "#/definitions/ErrorResponse" }
             }
           }
         }
       }
-    };
+    },
+    "definitions": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["username", "grant_type"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "The environment-specific School ID assigned to your organization by TCE (e.g., `bddc-pun-ahm` for QA).",
+            "example": "bddc-pun-ahm"
+          },
+          "grant_type": {
+            "type": "string",
+            "description": "The OAuth grant type for this authentication flow. Must always be set to `org_auto`.",
+            "enum": ["org_auto"],
+            "example": "org_auto"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "integer",
+            "description": "Numeric error code identifying the failure type. `1` = resource not found; `4` = invalid request or business rule violation.",
+            "example": 1
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "Human-readable description of the error.",
+            "example": "Institution not found"
+          }
+        }
+      }
+    }
+  };
 
-    window.onload = function () {
-      SwaggerUIBundle({
-        spec: spec,
-        dom_id: '#swagger-ui',
-        presets: [
-          SwaggerUIBundle.presets.apis
-        ],
-        plugins: [
-          SwaggerUIBundle.plugins.DownloadUrl
-        ],
-        layout: "BaseLayout",
-        deepLinking: true,
-        defaultModelsExpandDepth: 2,
-        defaultModelExpandDepth: 2,
-        displayRequestDuration: true,
-        tryItOutEnabled: true
-      });
-    };
-  </script>
+  window.onload = function () {
+    SwaggerUIBundle({
+      spec: spec,
+      dom_id: '#swagger-ui',
+      presets: [SwaggerUIBundle.presets.apis],
+      plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+      layout: "BaseLayout",
+      deepLinking: true,
+      defaultModelsExpandDepth: 2,
+      defaultModelExpandDepth: 2,
+      displayRequestDuration: true,
+      tryItOutEnabled: true,
+      docExpansion: "list"
+    });
+  };
+</script>
 </body>
 </html>

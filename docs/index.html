@@ -189,6 +189,163 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── Integration Status ──────────────────────────────────── */
+    .section-status {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 60px 0;
+    }
+
+    .status-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      padding: 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .status-meta {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .status-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      color: var(--tce-muted);
+      margin-bottom: 5px;
+    }
+
+    .status-title {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--tce-dark);
+      margin-bottom: 4px;
+    }
+
+    .status-sub {
+      font-size: 13px;
+      color: var(--tce-muted);
+    }
+
+    .status-counters {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .status-counter {
+      text-align: center;
+      min-width: 72px;
+    }
+
+    .counter-num {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .counter-num.done   { color: #006644; }
+    .counter-num.pending { color: #FF8B00; }
+    .counter-num.total  { color: var(--tce-blue); }
+
+    .counter-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--tce-muted);
+    }
+
+    .status-divider {
+      width: 1px; height: 52px;
+      background: var(--tce-border);
+      align-self: center;
+    }
+
+    .status-progress {
+      flex: 1;
+      min-width: 200px;
+      align-self: center;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .progress-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--tce-dark);
+    }
+
+    .progress-pct {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--tce-blue);
+    }
+
+    .progress-bar-wrap {
+      height: 8px;
+      background: #DFE1E6;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 67%;
+      background: linear-gradient(90deg, var(--tce-blue), var(--tce-accent));
+      border-radius: 4px;
+    }
+
+    .progress-note {
+      font-size: 11.5px;
+      color: var(--tce-muted);
+    }
+
+    .api-status-list {
+      flex: 2;
+      min-width: 280px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 20px;
+      align-self: center;
+    }
+
+    .api-status-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      color: var(--tce-dark);
+    }
+
+    .api-status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-live    { background: #36B37E; }
+    .dot-pending { background: #FF8B00; }
+
+    .api-status-item.is-pending { color: var(--tce-muted); }
+
     /* ── API Cards ────────────────────────────────────────────── */
     .section-apis {
       padding: 68px 60px 56px;
@@ -227,6 +384,8 @@
       gap: 20px;
     }
 
+    .api-card:last-child:nth-child(3n+1) { grid-column: 2; }
+
     .api-card {
       background: #fff;
       border-radius: var(--radius);
@@ -245,6 +404,8 @@
     .api-card:nth-child(1) { animation-delay: .05s; }
     .api-card:nth-child(2) { animation-delay: .14s; }
     .api-card:nth-child(3) { animation-delay: .23s; }
+    .api-card:nth-child(4) { animation-delay: .32s; }
+    .api-card:nth-child(5) { animation-delay: .41s; }
 
     .api-card::before {
       content: '';
@@ -262,6 +423,8 @@
     .api-card.auth    { --c1: #0065FF; --c2: #00B8D9; }
     .api-card.teacher { --c1: #36B37E; --c2: #57D9A3; }
     .api-card.config  { --c1: #FF8B00; --c2: #FF5630; }
+    .api-card.erp     { --c1: #6554C0; --c2: #998DD9; }
+    .api-card.studi   { --c1: #00B8D9; --c2: #79E2F2; }
 
     .card-badge {
       font-size: 10.5px;
@@ -277,6 +440,8 @@
     .api-card.auth    .card-badge { background: #DEEBFF; color: #0747A6; }
     .api-card.teacher .card-badge { background: #E3FCEF; color: #006644; }
     .api-card.config  .card-badge { background: #FFF0B3; color: #974F0C; }
+    .api-card.erp     .card-badge { background: #EAE6FF; color: #403294; }
+    .api-card.studi   .card-badge { background: #E6FCFF; color: #006A83; }
 
     .card-icon {
       width: 46px; height: 46px;
@@ -291,6 +456,8 @@
     .api-card.auth    .card-icon { background: #DEEBFF; }
     .api-card.teacher .card-icon { background: #E3FCEF; }
     .api-card.config  .card-icon { background: #FFF8E6; }
+    .api-card.erp     .card-icon { background: #EAE6FF; }
+    .api-card.studi   .card-icon { background: #E6FCFF; }
 
     .card-title {
       font-family: 'IBM Plex Serif', sans-serif;
@@ -334,6 +501,28 @@
     }
 
     .api-card:hover .card-cta { gap: 9px; }
+
+    .card-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      color: #006644;
+      background: #E3FCEF;
+      border: 1px solid #ABF5D1;
+      border-radius: 10px;
+      padding: 2px 8px;
+    }
+
+    .card-status::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #36B37E;
+    }
 
     .card-cta svg {
       width: 13px; height: 13px;
@@ -764,7 +953,11 @@
     /* ── Responsive ───────────────────────────────────────────── */
     @media (max-width: 880px) {
       .nav-bar, .hero-content    { padding-left: 24px; padding-right: 24px; }
-      .section-apis              { padding: 56px 24px 48px; }
+      .section-status            { padding: 28px 24px 0; }
+      .status-card               { flex-direction: column; gap: 16px; }
+      .status-divider            { display: none; }
+      .api-status-list           { grid-template-columns: 1fr; }
+      .section-apis              { padding: 40px 24px 48px; }
       .api-grid                  { grid-template-columns: 1fr; }
       .section-steps             { padding: 80px 24px; }
       .steps-grid                { grid-template-columns: 1fr; }
@@ -797,18 +990,70 @@
         <span class="gradient-text">API Reference</span>
       </h1>
       <p class="hero-desc">
-        Complete interactive API documentation for integrating with the TCE ERP platform.
-        Select a module below to explore endpoints, request schemas, and live examples.
+        Complete interactive API documentation for the Entrar ERP integration with the TCE Connect platform.
+        Select a module below to explore endpoints, request schemas, and integration guidelines.
       </p>
     </div>
   </header>
+
+  <!-- INTEGRATION STATUS DASHBOARD -->
+  <div class="section-status">
+    <div class="status-card">
+      <div class="status-meta">
+        <div class="status-label">Integration Status &mdash; June 2026</div>
+        <div class="status-title">Entrar ERP Integration</div>
+        <div class="status-sub">Partner: Entrar &nbsp;·&nbsp; API Platform v2.0</div>
+      </div>
+      <div class="status-divider"></div>
+      <div class="status-counters">
+        <div class="status-counter">
+          <div class="counter-num done">8</div>
+          <div class="counter-lbl">Live</div>
+        </div>
+        <div class="status-counter">
+          <div class="counter-num pending">4</div>
+          <div class="counter-lbl">Pending</div>
+        </div>
+        <div class="status-counter">
+          <div class="counter-num total">12</div>
+          <div class="counter-lbl">Total APIs</div>
+        </div>
+      </div>
+      <div class="status-divider"></div>
+      <div class="status-progress">
+        <div class="progress-header">
+          <span class="progress-text">Overall Completion</span>
+          <span class="progress-pct">67%</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <div class="progress-note">4 APIs in development: Class–Subject–Teacher Mapping, Class–Teacher Mapping, Remove Teacher, Remove Student</div>
+      </div>
+      <div class="status-divider"></div>
+      <div class="api-status-list">
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>Teacher Auto Login</div>
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>Student Auto Login</div>
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>Add Teacher</div>
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>Add Student</div>
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>AY Creation</div>
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>Section &amp; Class Setup</div>
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>School Authentication</div>
+        <div class="api-status-item"><span class="api-status-dot dot-live"></span>Assign Student to Class</div>
+        <div class="api-status-item is-pending"><span class="api-status-dot dot-pending"></span>Class–Subject–Teacher Map</div>
+        <div class="api-status-item is-pending"><span class="api-status-dot dot-pending"></span>Class–Teacher Mapping</div>
+        <div class="api-status-item is-pending"><span class="api-status-dot dot-pending"></span>Remove Teacher</div>
+        <div class="api-status-item is-pending"><span class="api-status-dot dot-pending"></span>Remove Student</div>
+      </div>
+    </div>
+  </div>
 
   <!-- API MODULES -->
   <section class="section-apis">
     <div class="section-header">
       <div class="section-label">Available Modules</div>
       <h2 class="section-title">API Documentation</h2>
-      <p class="section-desc">Browse interactive Swagger docs for each integration module.</p>
+      <p class="section-desc">Interactive Swagger documentation for all live integration modules. Pending APIs will appear here upon availability.</p>
     </div>
 
     <div class="api-grid">
@@ -822,7 +1067,7 @@
           This is the required first step for all ERP integrations.
         </p>
         <div class="card-footer">
-          <span class="card-meta">v2.0 · Swagger UI</span>
+          <span class="card-meta"><span class="card-status">Live</span> &nbsp;v2.0 · Swagger UI</span>
           <span class="card-cta">
             Open docs
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -839,7 +1084,7 @@
           Manage teacher sessions and access tokens for classroom integrations.
         </p>
         <div class="card-footer">
-          <span class="card-meta">v2.0 · Swagger UI</span>
+          <span class="card-meta"><span class="card-status">Live</span> &nbsp;v2.0 · Swagger UI</span>
           <span class="card-cta">
             Open docs
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -856,7 +1101,41 @@
           calendar data for your organization's ERP environment.
         </p>
         <div class="card-footer">
-          <span class="card-meta">v2.0 · Swagger UI</span>
+          <span class="card-meta"><span class="card-status">Live</span> &nbsp;v2.0 · Swagger UI</span>
+          <span class="card-cta">
+            Open docs
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="api-card erp" href="TC_Auto_Login/TC_Auto_Login.html">
+        <div class="card-badge">ERP SSO</div>
+        <div class="card-icon">🔑</div>
+        <div class="card-title">TC Auto Login API</div>
+        <p class="card-desc">
+          Authenticate learners via seatcode verification and redirect them seamlessly
+          into the TeachConnect application through ERP single sign-on.
+        </p>
+        <div class="card-footer">
+          <span class="card-meta"><span class="card-status">Live</span> &nbsp;v1.0 · Swagger UI</span>
+          <span class="card-cta">
+            Open docs
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="api-card studi" href="Studi_Auto_Login/Studi_Auto_Login.html">
+        <div class="card-badge">Student SSO</div>
+        <div class="card-icon">🎓</div>
+        <div class="card-title">Studi Auto Login API</div>
+        <p class="card-desc">
+          Authenticate students via seatcode verification and redirect them seamlessly
+          into the Studi learning platform through ERP single sign-on.
+        </p>
+        <div class="card-footer">
+          <span class="card-meta"><span class="card-status">Live</span> &nbsp;v1.0 · Swagger UI</span>
           <span class="card-cta">
             Open docs
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -914,9 +1193,10 @@
     <div class="notice-box">
       <span class="notice-icon">ℹ️</span>
       <div class="notice-text">
-        <strong>For Authorized Partners Only.</strong> This documentation is intended exclusively for
-        TCE integration partners. API credentials are environment-specific — ensure you are using
-        the correct tokens for your target environment (UAT / Production). For access requests or
+        <strong>For Authorized Partners Only.</strong> This documentation is prepared exclusively for
+        the Entrar ERP integration with TCE Connect. API credentials are environment-specific — ensure
+        the correct tokens and School IDs are used for your target environment (Dev / QA / Production).
+        All requests must originate from Entrar's registered IP addresses. For access requests or
         technical support, contact
         <a href="mailto:niteshg@tataclassedge.com">niteshg@tataclassedge.com</a>.
       </div>
@@ -939,7 +1219,7 @@
       </div>
     </div>
     <p class="footer-copy">
-      &copy; 2026 Tata ClassEdge Limited &mdash; Confidential. Authorized Partners Only.
+      &copy; 2026 Tata ClassEdge Limited &mdash; Confidential. For Authorized Partners Only. Entrar ERP Integration.
     </p>
   </footer>
 
@@ -1066,20 +1346,15 @@
       function clearError(){ errorBox.textContent = ''; inputs.forEach(i => i.classList.remove('error-state')); }
       function clearDigits(){ inputs.forEach(i => { i.value = ''; i.classList.remove('filled', 'error-state'); }); syncBtn(); }
 
-      let PARTNER_CODES = null;
-      fetch('resources/access-codes.json')
-        .then(r => r.json())
-        .then(data => { PARTNER_CODES = data.partners; })
-        .catch(() => { PARTNER_CODES = []; });
+      const PARTNER_CODES = [
+        { "name": "Wisibles",  "code": "269963" },
+        { "name": "Entrar",    "code": "753481" },
+        { "name": "TCE Admin", "code": "282828" }
+      ];
 
       function verifyCode() {
         const code = getCode();
         if (code.length !== 6) return;
-
-        if (!PARTNER_CODES) {
-          errorBox.textContent = 'Access codes still loading — please try again.';
-          return;
-        }
 
         btnVerify.disabled = true;
         btnVerify.textContent = 'Verifying…';
@@ -1087,6 +1362,7 @@
         const match = PARTNER_CODES.find(p => p.code === code);
 
         if (match) {
+          sessionStorage.setItem('tce_docs_access', '1');
           document.getElementById('modalDefault').style.display = 'none';
           document.getElementById('modalSuccess').style.display = '';
           document.getElementById('successName').textContent = 'Welcome, ' + match.name;

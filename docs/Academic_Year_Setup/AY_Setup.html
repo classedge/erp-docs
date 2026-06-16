@@ -1,240 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TCE Connect — Academic Year Setup API</title>
-    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+  <script>if(!sessionStorage.getItem('tce_docs_access')){window.location.replace('../index.html');}</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academic Year Setup API — TCE ERP Partner Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
+  <style>
+    :root {
+      --tce-dark: #091E42; --tce-blue: #0052CC; --tce-accent: #0065FF;
+      --tce-orange: #FF8B00; --tce-muted: #5E6C84; --tce-border: #DFE1E6; --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #EFF1F5; color: var(--tce-dark);
+      line-height: 1.65; -webkit-font-smoothing: antialiased;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #f4f6f9;
-        }
+    /* ── Header ── */
+    .tce-header { background: var(--tce-dark); height: 60px; display: flex; align-items: center; padding: 0 48px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 12px rgba(0,0,0,.4); }
+    .back-link { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,.5); text-decoration: none; font-size: 12px; font-weight: 500; padding-right: 20px; border-right: 1px solid rgba(255,255,255,.1); height: 36px; transition: color .15s; }
+    .back-link:hover { color: rgba(255,255,255,.85); }
+    .back-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .header-brand { padding: 0 20px; display: flex; flex-direction: column; line-height: 1.25; border-right: 1px solid rgba(255,255,255,.1); height: 36px; justify-content: center; }
+    .brand-name { font-family: 'IBM Plex Serif', serif; font-weight: 700; font-size: 14px; color: #fff; }
+    .brand-sub  { font-size: 9.5px; color: rgba(255,255,255,.38); letter-spacing: 0.7px; text-transform: uppercase; }
+    .page-title { padding-left: 20px; font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,.75); }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .pill { border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.4px; }
+    .pill-orange { background: rgba(255,139,0,.2); border: 1px solid rgba(255,139,0,.35); color: #FFB74D; }
+    .pill-white  { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.4); }
 
-        /* ── Top banner ── */
-        #top-banner {
-            background: linear-gradient(135deg, #1a3c5e 0%, #1d6fa4 100%);
-            color: #fff;
-            padding: 22px 40px 18px;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.25);
-        }
-        #top-banner .logo {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #fff;
-        }
-        #top-banner .logo span { color: #63c9f5; }
-        #top-banner .meta { flex: 1; }
-        #top-banner .meta h1 {
-            font-size: 17px;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-        #top-banner .meta p {
-            font-size: 12px;
-            opacity: 0.75;
-            margin-top: 3px;
-        }
-        #top-banner .badge {
-            background: rgba(255,255,255,.15);
-            border: 1px solid rgba(255,255,255,.3);
-            border-radius: 20px;
-            padding: 4px 14px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+    /* ── Environment Info ── */
+    .env-info { background: #fff; border-bottom: 1px solid var(--tce-border); padding: 11px 48px; }
+    .env-inner { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 28px; }
+    .env-heading { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--tce-muted); }
+    .env-row { display: flex; align-items: center; gap: 7px; }
+    .env-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot-dev  { background: #FF8B00; } .dot-qa { background: #36B37E; } .dot-prod { background: #0052CC; }
+    .env-lbl { font-size: 10.5px; font-weight: 700; color: var(--tce-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+    .env-val { font-family: 'SF Mono','Fira Code','Consolas',monospace; font-size: 12px; color: var(--tce-blue); background: #EBF2FF; padding: 2px 8px; border-radius: 4px; }
+    .env-note { font-size: 12px; color: var(--tce-muted); }
+    .env-sep { width: 1px; height: 18px; background: var(--tce-border); }
 
-        /* ── Flow progress strip ── */
-        #flow-strip {
-            background: #fff;
-            border-bottom: 1px solid #dde3ea;
-            padding: 14px 40px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        #flow-strip .strip-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .6px;
-            color: #6b7a8d;
-            margin-bottom: 10px;
-        }
-        .flow-steps {
-            display: inline-flex;
-            align-items: center;
-            gap: 0;
-        }
-        .flow-step {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #fff;
-            position: relative;
-        }
-        .flow-step .num {
-            width: 20px; height: 20px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; font-weight: 700;
-            flex-shrink: 0;
-        }
-        .flow-step.phase-ay   { background: #1d6fa4; }
-        .flow-step.phase-ic   { background: #27a36c; }
-        .flow-step.phase-ac   { background: #e07b2a; }
-        .flow-step.phase-is   { background: #7b5ea7; }
-        .flow-step.phase-state { background: #555e6b; font-style: italic; }
-        .flow-step.phase-stu   { background: #d4436e; }
-        .flow-step.phase-staff { background: #0e9aa7; }
+    /* ── Notice ── */
+    .notice { padding: 9px 48px; font-size: 12.5px; line-height: 1.58; }
+    .notice-warning { background: #FFF8E6; border-bottom: 1px solid #FFE380; color: #7A4100; }
+    .notice-info    { background: #EAF3FF; border-bottom: 1px solid #B3CEFF; color: #0747A6; }
+    .notice strong  { font-weight: 600; }
 
-        .flow-arrow {
-            width: 22px; height: 2px;
-            background: #c0cad6;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .flow-arrow::after {
-            content: '';
-            position: absolute;
-            right: -1px; top: -4px;
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-            border-left: 7px solid #c0cad6;
-        }
+    /* ── Flow Strip ── */
+    .flow-strip { background: #fff; border-bottom: 1px solid var(--tce-border); padding: 14px 48px; overflow-x: auto; }
+    .strip-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--tce-muted); margin-bottom: 12px; }
+    .flow-steps { display: inline-flex; align-items: center; gap: 0; }
+    .flow-step { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; color: #fff; white-space: nowrap; font-family: 'IBM Plex Sans', sans-serif; }
+    .flow-step .num { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,.3); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+    .step-ay   { background: #1d6fa4; }
+    .step-is   { background: #7b5ea7; }
+    .step-stu  { background: #d4436e; }
+    .step-stf  { background: #0e9aa7; }
+    .flow-arrow { width: 22px; height: 2px; background: #c0cad6; position: relative; flex-shrink: 0; }
+    .flow-arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid #c0cad6; }
 
-        /* ── Swagger wrapper ── */
-        #swagger-ui-wrapper {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 24px 20px 60px;
-        }
+    /* ── Swagger Wrapper ── */
+    .swagger-wrap { max-width: 1240px; margin: 0 auto; padding: 32px 48px 80px; }
+    #swagger-ui { background: transparent; }
 
-        /* Swagger UI overrides */
-        .swagger-ui .topbar { display: none !important; }
-        .swagger-ui .info { margin: 0 0 20px !important; }
-        .swagger-ui .info .title { font-size: 22px !important; }
-        .swagger-ui .scheme-container { padding: 12px 0 !important; }
-        .swagger-ui .opblock-tag {
-            font-size: 15px !important;
-            border-bottom: 2px solid #e0e7ef !important;
-        }
-        .swagger-ui .opblock .opblock-summary-method {
-            font-size: 13px !important;
-            min-width: 72px !important;
-        }
-        /* Tag colour accents */
-        .swagger-ui .opblock-tag[data-tag="Academic Year"] { border-color: #1d6fa4 !important; color: #1d6fa4 !important; }
-        .swagger-ui .opblock-tag[data-tag="Calendar"]       { border-color: #27a36c !important; color: #27a36c !important; }
-        .swagger-ui .opblock-tag[data-tag="Institutional Structure"] { border-color: #7b5ea7 !important; color: #7b5ea7 !important; }
-        .swagger-ui .opblock-tag[data-tag="AY State"]       { border-color: #555e6b !important; color: #555e6b !important; }
-        .swagger-ui .opblock-tag[data-tag="Students"]        { border-color: #d4436e !important; color: #d4436e !important; }
-        .swagger-ui .opblock-tag[data-tag="Staff"]           { border-color: #0e9aa7 !important; color: #0e9aa7 !important; }
-    </style>
+    /* ── Swagger UI Overrides ── */
+    .swagger-ui .topbar { display: none !important; }
+    .swagger-ui .info { background: #fff !important; border-radius: var(--radius) !important; padding: 28px 32px !important; margin-bottom: 28px !important; box-shadow: 0 1px 6px rgba(9,30,66,.09) !important; }
+    .swagger-ui .info .title { font-family: 'IBM Plex Serif', serif !important; font-size: 24px !important; font-weight: 700 !important; color: var(--tce-dark) !important; line-height: 1.2 !important; }
+    .swagger-ui .info p, .swagger-ui .info .description p { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 14px !important; line-height: 1.72 !important; color: #42526E !important; margin-bottom: 10px !important; }
+    .swagger-ui .info h2, .swagger-ui .info h3 { font-family: 'IBM Plex Serif', serif !important; font-weight: 600 !important; font-size: 16px !important; color: var(--tce-dark) !important; margin: 18px 0 8px !important; }
+    .swagger-ui .info table { font-size: 13px !important; border-collapse: collapse !important; margin: 12px 0 !important; }
+    .swagger-ui .info table th { background: #F4F5F7 !important; padding: 7px 14px !important; font-weight: 600 !important; font-size: 12px !important; text-align: left !important; border: 1px solid var(--tce-border) !important; }
+    .swagger-ui .info table td { padding: 7px 14px !important; border: 1px solid var(--tce-border) !important; font-size: 13px !important; }
+    .swagger-ui .info code, .swagger-ui .markdown code { font-family: 'SF Mono','Fira Code','Consolas',monospace !important; font-size: 12px !important; background: #EBF2FF !important; color: #0747A6 !important; padding: 2px 6px !important; border-radius: 4px !important; }
+    .swagger-ui .info blockquote, .swagger-ui .markdown blockquote { border-left: 3px solid var(--tce-blue); background: #F4F7FF; padding: 10px 16px; border-radius: 0 6px 6px 0; margin: 12px 0; font-size: 13.5px !important; line-height: 1.65 !important; color: #344563 !important; }
+    .swagger-ui .opblock-tag { background: #fff !important; border-radius: var(--radius) !important; padding: 14px 20px !important; margin-top: 20px !important; border-bottom: none !important; box-shadow: 0 1px 3px rgba(9,30,66,.08) !important; font-family: 'IBM Plex Serif', serif !important; font-size: 15px !important; font-weight: 700 !important; color: var(--tce-dark) !important; }
+    .swagger-ui .opblock-tag:hover { background: #F0F4FF !important; }
+    .swagger-ui .opblock-tag small { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 12.5px !important; font-weight: 400 !important; color: var(--tce-muted) !important; }
+    .swagger-ui .opblock-tag[data-tag="Academic Year"]           { border-left: 3px solid #1d6fa4 !important; }
+    .swagger-ui .opblock-tag[data-tag="Institutional Structure"] { border-left: 3px solid #7b5ea7 !important; }
+    .swagger-ui .opblock-tag[data-tag="Students"]                { border-left: 3px solid #d4436e !important; }
+    .swagger-ui .opblock-tag[data-tag="Staff"]                   { border-left: 3px solid #0e9aa7 !important; }
+    .swagger-ui .opblock { border-radius: var(--radius) !important; box-shadow: 0 1px 3px rgba(9,30,66,.08) !important; margin-bottom: 10px !important; }
+    .swagger-ui .opblock .opblock-summary { padding: 13px 20px !important; }
+    .swagger-ui .opblock-summary-description { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 14px !important; font-weight: 500 !important; color: #344563 !important; }
+    .swagger-ui .opblock.opblock-post { border-color: var(--tce-accent) !important; }
+    .swagger-ui .opblock.opblock-post .opblock-summary { background: #EBF2FF !important; }
+    .swagger-ui .opblock.opblock-get  { border-color: #00875A !important; }
+    .swagger-ui .opblock.opblock-get  .opblock-summary { background: #E3FCEF !important; }
+    .swagger-ui .opblock.opblock-put  { border-color: #FF8B00 !important; }
+    .swagger-ui .opblock.opblock-put  .opblock-summary { background: #FFF8E6 !important; }
+    .swagger-ui .opblock-summary-method { border-radius: 5px !important; font-weight: 700 !important; min-width: 68px !important; text-align: center !important; font-size: 12px !important; letter-spacing: 0.5px !important; }
+    .swagger-ui .markdown p { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 14px !important; line-height: 1.7 !important; color: #344563 !important; }
+    .swagger-ui .markdown table { font-size: 13px !important; border-collapse: collapse !important; }
+    .swagger-ui .markdown table th { background: #F4F5F7 !important; padding: 7px 14px !important; font-weight: 600 !important; border: 1px solid var(--tce-border) !important; }
+    .swagger-ui .markdown table td { padding: 7px 14px !important; border: 1px solid var(--tce-border) !important; }
+    .swagger-ui .parameters-col_description { font-size: 13.5px !important; line-height: 1.65 !important; }
+    .swagger-ui .parameter__name { font-family: 'SF Mono','Fira Code','Consolas',monospace !important; font-size: 13px !important; }
+    .swagger-ui .parameter__type { font-size: 11.5px !important; color: var(--tce-muted) !important; }
+    .swagger-ui .response-col_description { font-size: 13.5px !important; line-height: 1.65 !important; }
+    .swagger-ui .response-col_status { font-size: 14px !important; font-weight: 600 !important; }
+    .swagger-ui .btn.execute { background: var(--tce-blue) !important; border-color: var(--tce-blue) !important; border-radius: 5px !important; font-weight: 600 !important; font-size: 14px !important; padding: 8px 20px !important; }
+    .swagger-ui .btn.execute:hover { background: var(--tce-accent) !important; border-color: var(--tce-accent) !important; }
+    .swagger-ui .btn.authorize { border-color: var(--tce-blue) !important; color: var(--tce-blue) !important; border-radius: 5px !important; font-weight: 600 !important; }
+    .swagger-ui section.models { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: 0 1px 3px rgba(9,30,66,.07); margin-top: 20px; }
+    .swagger-ui .model-title { font-family: 'IBM Plex Serif', serif !important; font-size: 15px !important; }
+    .swagger-ui .scheme-container { background: #F8FAFC !important; border: 1px solid var(--tce-border) !important; border-radius: var(--radius) !important; padding: 14px 24px !important; margin-bottom: 24px !important; box-shadow: none !important; }
+
+    /* ── Footer ── */
+    .tce-footer { background: var(--tce-dark); padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .footer-left { font-size: 11.5px; color: rgba(255,255,255,.28); }
+    .footer-left a { color: rgba(255,255,255,.45); text-decoration: none; }
+    .footer-left a:hover { color: rgba(255,255,255,.75); }
+    .footer-right { display: flex; align-items: center; gap: 10px; }
+    .confidential { background: rgba(255,86,48,.14); border: 1px solid rgba(255,86,48,.25); border-radius: 4px; padding: 3px 8px; font-size: 9.5px; font-weight: 700; color: #FF8F73; letter-spacing: 1.1px; text-transform: uppercase; }
+    .footer-copy { font-size: 11.5px; color: rgba(255,255,255,.2); }
+    @media (max-width: 768px) {
+      .tce-header, .env-info, .notice, .flow-strip, .swagger-wrap, .tce-footer { padding-left: 20px !important; padding-right: 20px !important; }
+      .page-title { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ═══════════════════ TOP BANNER ═══════════════════ -->
-<div id="top-banner">
-    <div class="logo">TCE <span>Connect</span></div>
-    <div class="meta">
-        <h1>Academic Year Setup API</h1>
-        <p>CX Connect Platform &nbsp;·&nbsp; Development Server &nbsp;·&nbsp; OpenAPI 3.0.3</p>
+<header class="tce-header">
+  <a class="back-link" href="../index.html">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Integration Hub
+  </a>
+  <div class="header-brand">
+    <span class="brand-name">Tata ClassEdge</span>
+    <span class="brand-sub">ERP Partner API</span>
+  </div>
+  <span class="page-title">Academic Year Setup API</span>
+  <div class="header-right">
+    <span class="pill pill-orange">Configuration</span>
+    <span class="pill pill-white">v1.0</span>
+  </div>
+</header>
+
+<div class="env-info">
+  <div class="env-inner">
+    <span class="env-heading">Environments</span>
+    <div class="env-row">
+      <span class="env-dot dot-dev"></span>
+      <span class="env-lbl">Dev</span>
+      <span class="env-val">cx-dev-connect.devstudi.com</span>
     </div>
-    <div class="badge">v1.0.0</div>
-</div>
-
-<!-- ═══════════════════ FLOW STRIP ═══════════════════ -->
-<div id="flow-strip">
-    <div class="strip-label"> AY Setup Flow — 8 API calls</div>
-    <div class="flow-steps">
-
-        <div class="flow-step phase-ay">
-            <span class="num">1</span>Create Academic Year
-        </div>
-        <div class="flow-arrow"></div>
-
-        <!-- <div class="flow-step phase-state">
-          <span class="num">2</span>Init State
-        </div>
-        <div class="flow-arrow"></div> -->
-
-        <!-- <div class="flow-step phase-ic">
-          <span class="num">3</span>Week-Off Events
-        </div>
-        <div class="flow-arrow"></div>
-
-        <div class="flow-step phase-state">
-          <span class="num">4</span>Update State
-        </div>
-        <div class="flow-arrow"></div> -->
-
-        <!-- <div class="flow-step phase-ac">
-          <span class="num">5</span>Terms &amp; Vacations
-        </div>
-        <div class="flow-arrow"></div>
-
-        <div class="flow-step phase-state">
-          <span class="num">6</span>Update State
-        </div>
-        <div class="flow-arrow"></div> -->
-
-        <div class="flow-step phase-is">
-            <span class="num">2</span>Create Sections
-        </div>
-        <div class="flow-arrow"></div>
-
-        <div class="flow-step phase-is">
-            <span class="num">3</span>Fetch Grades
-        </div>
-        <div class="flow-arrow"></div>
-
-        <div class="flow-step phase-is">
-            <span class="num">4</span>Link Grades
-        </div>
-        <div class="flow-arrow"></div>
-
-        <div class="flow-step phase-is">
-            <span class="num">5</span>Create Classes
-        </div>
-        <div class="flow-arrow"></div>
-
-        <!-- <div class="flow-step phase-state">
-          <span class="num">11</span>Update State
-        </div>
-        <div class="flow-arrow"></div> -->
-
-        <div class="flow-step phase-stu">
-            <span class="num">6</span>Create Students
-        </div>
-        <div class="flow-arrow"></div>
-
-        <div class="flow-step phase-stu">
-            <span class="num">7</span>Assign to Class
-        </div>
-        <div class="flow-arrow"></div>
-
-        <div class="flow-step phase-staff">
-            <span class="num">8</span>Create Teacher
-        </div>
-
+    <span class="env-sep"></span>
+    <div class="env-row">
+      <span class="env-dot dot-qa"></span>
+      <span class="env-lbl">QA</span>
+      <span class="env-val">cx-qa.devstudi.com</span>
     </div>
+    <span class="env-sep"></span>
+    <div class="env-row">
+      <span class="env-dot dot-prod"></span>
+      <span class="env-lbl">Prod</span>
+      <span class="env-note">Host provided upon production onboarding</span>
+    </div>
+  </div>
 </div>
 
-<!-- ═══════════════════ SWAGGER UI ═══════════════════ -->
-<div id="swagger-ui-wrapper">
-    <div id="swagger-ui"></div>
+<div class="notice notice-warning">
+  <strong>Setup Constraints:</strong> (1) Academic Years can only be created with <strong>future start dates</strong>. (2) Only <strong>one Draft Academic Year</strong> may exist per institution at any time — the existing draft must be activated or deleted before a new one can be created. (3) Sections, Grades, Classes, Students, and Teachers can only be modified while the Academic Year is in <strong>DRAFT status</strong>.
 </div>
+
+<div class="flow-strip">
+  <div class="strip-label">Setup Sequence — 8 API Calls</div>
+  <div class="flow-steps">
+    <div class="flow-step step-ay"><span class="num">1</span>Create Academic Year</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-is"><span class="num">2</span>Create Sections</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-is"><span class="num">3</span>Fetch Grades</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-is"><span class="num">4</span>Link Grades</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-is"><span class="num">5</span>Create Classes</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-stu"><span class="num">6</span>Create Students</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-stu"><span class="num">7</span>Assign to Class</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-stf"><span class="num">8</span>Create Teachers</div>
+  </div>
+</div>
+
+<div class="swagger-wrap">
+  <div id="swagger-ui"></div>
+</div>
+
+<footer class="tce-footer">
+  <div class="footer-left">
+    &copy; 2026 Tata ClassEdge Limited &mdash;
+    <a href="mailto:niteshg@tataclassedge.com">niteshg@tataclassedge.com</a>
+  </div>
+  <div class="footer-right">
+    <span class="confidential">Confidential</span>
+    <span class="footer-copy">Authorized Partners Only</span>
+  </div>
+</footer>
 
 <script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
 <script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js"></script>
@@ -242,22 +215,16 @@
     const spec = {
         "openapi": "3.0.3",
         "info": {
-            "title": "TCE — Academic Year Setup API",
-            "description": "APIs for setting up an Academic Year on the TCE platform. Covers AY creation, institutional structure (sections, grades, class divisions)",
+            "title": "Academic Year Setup API",
+            "description": "APIs for provisioning an Academic Year on the TCE Connect platform. The setup follows a fixed 8-step sequence covering Academic Year creation, institutional structure (sections, grades, class divisions), student enrollment, and teacher provisioning.\n\n## Setup Sequence\n| Step | API | Endpoint |\n|---|---|---|\n| 1 | Create Academic Year | `POST /connect/4/1/api/v1/institutions/academicyears` |\n| 2 | Create Sections | `POST /connect/4/1/api/v1/institutions/sections` |\n| 3 | Fetch Master Grades | `GET /connect/5/1/api/v1/institutions/grades/master` |\n| 4 | Link Grades to Sections | `PUT /connect/4/1/api/v1/institutions/sections/grades` |\n| 5 | Create Class Divisions | `POST /connect/4/1/api/v1/institutions/classes` |\n| 6 | Create Students | `POST /connect/5/31/api/v1/institutions/students` |\n| 7 | Assign Students to Class | `POST /connect/5/31/api/v1/institutions/classes/{classId}/students` |\n| 8 | Create Teachers | `POST /connect/5/31/api/v1/institutions/staff` |\n\n## Key Constraints\n- Academic Years may only be created with **future start dates**.\n- Only **one Draft Academic Year** may exist per institution at a time.\n- All structural modifications (sections, grades, classes, student/teacher assignments) are only permitted while the Academic Year is in **DRAFT status**.\n- Student and teacher **phone numbers are optional**. Omitting them is recommended — TCE auto-generates mobile numbers, which enables seamless Auto Login flows.\n- The **First Name + Last Name combination must be unique** within the institution for both students and teachers.\n\n## Authentication\nAll endpoints require a valid Bearer token obtained via the School Login API (`POST /guide/rule-api/31/api/v2/erp/token`). Pass the token as `Authorization: Bearer <token>`.",
             "version": "1.0.0",
             "contact": { "email": "niteshg@tataclassedge.com" }
         },
-        // "servers": [
-        //   {
-        //     "url": "https://cx-dev-connect.devstudi.com",
-        //     "description": "CX Development Server"
-        //   }
-        // ],
         "tags": [
             { "name": "Academic Year",           "description": "Create and manage academic years" },
             { "name": "Institutional Structure", "description": "Sections, grades, and class division management" },
-            { "name": "Students",               "description": "Student creation and management" },
-            { "name": "Staff",                  "description": "Teacher and staff creation and management" }
+            { "name": "Students",               "description": "Student enrollment and class assignment" },
+            { "name": "Staff",                  "description": "Teacher and staff provisioning" }
         ],
         "paths": {
 
@@ -265,65 +232,41 @@
                 "post": {
                     "tags": ["Academic Year"],
                     "summary": "Create Academic Year",
-                    "description": "Creates a new academic year with a label, start date, end date, and active flag. The returned `id` (aye-...) is required as a reference for all subsequent setup APIs.",
+                    "description": "Creates a new Academic Year in DRAFT status. The returned `id` (prefixed `aye-`) is required as a reference in all subsequent setup calls.\n\n**Constraint:** Start date must be in the future, and only one Draft AY may exist per institution at a time.",
                     "operationId": "createAcademicYear",
                     "requestBody": {
                         "required": true,
                         "content": {
                             "application/json": {
                                 "schema": { "$ref": "#/components/schemas/AcademicYearRequest" },
-                                "example": {
-                                    "label": "Academic Year Sep 26 - Aug 27",
-                                    "startDate": 1788546600000,
-                                    "endDate": 1819650600000,
-                                    "isActive": true
-                                }
+                                "example": { "label": "Academic Year Sep 2026 - Aug 2027", "startDate": 1788546600000, "endDate": 1819650600000, "isActive": true }
                             }
                         }
                     },
                     "responses": {
                         "200": {
-                            "description": "Academic year created successfully",
+                            "description": "Academic Year created successfully. Use the returned `id` in all subsequent setup API calls.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/AcademicYearResponse" },
-                                    "example": {
-                                        "id": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35",
-                                        "label": "Academic Year Sep 26 - Aug 27",
-                                        "startDate": "2026-09-05T00:00:00.000+05:30",
-                                        "endDate": "2027-08-31T00:00:00.000+05:30",
-                                        "status": 1,
-                                        "createdDate": "2026-05-11T16:30:28.542440506",
-                                        "lastModifiedDate": "2026-05-11T16:30:28.542440506",
-                                        "curriculumId": null
-                                    }
+                                    "example": { "id": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35", "label": "Academic Year Sep 2026 - Aug 2027", "startDate": "2026-09-05T00:00:00.000+05:30", "endDate": "2027-08-31T00:00:00.000+05:30", "status": 1, "createdDate": "2026-05-11T16:30:28.542440506", "lastModifiedDate": "2026-05-11T16:30:28.542440506", "curriculumId": null }
                                 }
                             }
                         },
                         "400": {
-                            "description": "Bad Request — Either the start date is in the past, or a draft Academic Year already exists.",
+                            "description": "Bad Request — Start date is in the past, start date is after end date, or a Draft Academic Year already exists for this institution.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "PastStartDate": {
-                                            "summary": "Start date is in the past",
-                                            "value": {
-                                                "errorCode": 4,
-                                                "errorMessage": "We can only create draft AY with future start dates."
-                                            }
-                                        },
-                                        "DraftAlreadyExists": {
-                                            "summary": "Draft AY already exists",
-                                            "value": {
-                                                "errorCode": 4,
-                                                "errorMessage": "Draft AY already exists."
-                                            }
-                                        }
+                                        "PastStartDate":    { "summary": "Start date is in the past",             "value": { "errorCode": 4, "errorMessage": "We can only create draft AY with future start dates." } },
+                                        "DraftExists":      { "summary": "Draft AY already exists",                "value": { "errorCode": 4, "errorMessage": "Draft AY already exists." } },
+                                        "StartAfterEnd":    { "summary": "Start date is after end date",          "value": { "errorCode": 4, "errorMessage": "We can only create draft AY with start date before end date." } }
                                     }
                                 }
                             }
                         },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
                         "500": { "$ref": "#/components/responses/InternalServerError" }
                     }
                 }
@@ -333,44 +276,40 @@
                 "post": {
                     "tags": ["Institutional Structure"],
                     "summary": "Create Sections",
-                    "description": "Creates one or more sections (e.g., Primary, Secondary) under an academic year. Sections are the top-level grouping for grades.",
+                    "description": "Creates one or more sections (e.g., Primary, Secondary) under an Academic Year. Sections are the top-level grouping that contains grades.\n\n**Prerequisite:** The Academic Year must be in **DRAFT** status.",
                     "operationId": "createSections",
                     "requestBody": {
                         "required": true,
                         "content": {
                             "application/json": {
                                 "schema": { "type": "array", "items": { "$ref": "#/components/schemas/SectionRequest" } },
-                                "example": [
-                                    {
-                                        "label": "Secondary",
-                                        "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35",
-                                        "order": 400,
-                                        "tags": { "uniqId": "sec-4" }
-                                    }
-                                ]
+                                "example": [{ "label": "Secondary", "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35", "order": 400, "tags": { "uniqId": "sec-4" } }]
                             }
                         }
                     },
                     "responses": {
                         "200": {
-                            "description": "Sections created successfully",
+                            "description": "Sections created successfully. Use the returned `id` values when linking grades to sections.",
                             "content": {
                                 "application/json": {
                                     "schema": { "type": "array", "items": { "$ref": "#/components/schemas/SectionResponse" } },
-                                    "example": [
-                                        {
-                                            "id": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1",
-                                            "label": "Secondary",
-                                            "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35",
-                                            "tags": { "uniqId": "sec-4" },
-                                            "order": 400,
-                                            "createdDate": "2026-05-11T16:53:10.900240843",
-                                            "lastModifiedDate": "2026-05-11T16:53:10.900240843"
-                                        }
-                                    ]
+                                    "example": [{ "id": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1", "label": "Secondary", "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35", "tags": { "uniqId": "sec-4" }, "order": 400, "createdDate": "2026-05-11T16:53:10.900240843", "lastModifiedDate": "2026-05-11T16:53:10.900240843" }]
                                 }
                             }
                         },
+                        "400": {
+                            "description": "Bad Request — Academic Year ID is invalid, does not belong to this institution, or the AY is not in DRAFT status.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "InvalidAY":  { "summary": "Academic Year not found", "value": { "errorCode": 1, "errorMessage": "Academic year not found." } },
+                                        "NotDraftAY": { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update not allowed for an Active or Closed Academic Year." } }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
                         "500": { "$ref": "#/components/responses/InternalServerError" }
                     }
                 }
@@ -380,11 +319,11 @@
                 "get": {
                     "tags": ["Institutional Structure"],
                     "summary": "Get Master Grade List",
-                    "description": "Retrieves the static master list of all available grades (Nursery through Class 12). Used as reference data when linking grades to sections.",
+                    "description": "Retrieves the static master list of all available grades (Nursery through Class 12). Use the `id` values from this response when linking grades to sections.",
                     "operationId": "getMasterGrades",
                     "responses": {
                         "200": {
-                            "description": "Full master grade list",
+                            "description": "Master grade list returned successfully.",
                             "content": {
                                 "application/json": {
                                     "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Grade" } },
@@ -408,6 +347,7 @@
                                 }
                             }
                         },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
                         "500": { "$ref": "#/components/responses/InternalServerError" }
                     }
                 }
@@ -417,170 +357,41 @@
                 "put": {
                     "tags": ["Institutional Structure"],
                     "summary": "Link Grades to Section",
-                    "description": "Links one or more grades to a section within an academic year. Grade IDs are obtained from the master grades endpoint (Step 8).",
+                    "description": "Links one or more grades to a section within an Academic Year. Grade IDs must be obtained from the Master Grade List endpoint (Step 3).\n\n**Prerequisite:** The Academic Year must be in **DRAFT** status.",
                     "operationId": "linkGradesToSection",
                     "requestBody": {
                         "required": true,
                         "content": {
                             "application/json": {
                                 "schema": { "type": "array", "items": { "$ref": "#/components/schemas/SectionGradeRequest" } },
-                                "example": [
-                                    {
-                                        "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35",
-                                        "sectionId": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1",
-                                        "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76"
-                                    }
-                                ]
+                                "example": [{ "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35", "sectionId": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1", "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76" }]
                             }
                         }
                     },
                     "responses": {
                         "200": {
-                            "description": "Grades linked to section successfully",
+                            "description": "Grades linked to section successfully.",
                             "content": {
                                 "application/json": {
                                     "schema": { "type": "array", "items": { "$ref": "#/components/schemas/SectionGradeResponse" } },
-                                    "example": [
-                                        {
-                                            "sectionId": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1",
-                                            "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76"
-                                        }
-                                    ]
+                                    "example": [{ "sectionId": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1", "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76" }]
                                 }
                             }
                         },
-                        "500": { "$ref": "#/components/responses/InternalServerError" }
-                    }
-                }
-            },
-
-            "/connect/5/31/api/v1/institutions/students": {
-                "post": {
-                    "tags": ["Students"],
-                    "summary": "Create Students",
-                    "description": "Creates one or more students under an institution. If the mobile number is not provided it will be auto-generated based on the school settings.",
-                    "operationId": "createStudents",
-                    "requestBody": {
-                        "required": true,
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StudentRequest" } },
-                                "example": [
-                                    {
-                                        "firstName": "ERPMAY",
-                                        "lastName": "SIX",
-                                        "grNumber": "KCPS-2019-001-036",
-                                        "gender": "MALE",
-                                        "dateOfBirth": "01/01/2014",
-                                        "mobile": "9999988888"
+                        "400": {
+                            "description": "Bad Request — One or more IDs are invalid, the grade is already linked to this section, or the AY is not in DRAFT status.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "InvalidSection": { "summary": "Section not found", "value": { "errorCode": 1, "errorMessage": "Section not found." } },
+                                        "InvalidGrade":   { "summary": "Grade not found in master list", "value": { "errorCode": 1, "errorMessage": "Grade not found." } },
+                                        "NotDraftAY":     { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update not allowed for an Active or Closed Academic Year." } }
                                     }
-                                ]
-                            }
-                        }
-                    },
-                    "responses": {
-                        "200": {
-                            "description": "Students created successfully",
-                            "content": {
-                                "application/json": {
-                                    "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StudentResponse" } },
-                                    "example": [
-                                        {
-                                            "seatcode": "KCP275536"
-                                        }
-                                    ]
                                 }
                             }
                         },
-                        "500": { "$ref": "#/components/responses/InternalServerError" }
-                    }
-                }
-            },
-
-            "/connect/5/31/api/v1/institutions/staff": {
-                "post": {
-                    "tags": ["Staff"],
-                    "summary": "Create Teacher",
-                    "description": "Creates one or more teachers under an institution. If the phone number is not provided it will be auto-generated based on the school settings. The returned seatcode is used as the teacher identifier in subsequent API calls.",
-                    "operationId": "createStaff",
-                    "requestBody": {
-                        "required": true,
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StaffRequest" } },
-                                "example": [
-                                    {
-                                        "title": "Mr",
-                                        "firstName": "Kartik",
-                                        "lastName": "Shah",
-                                        "gender": "MALE",
-                                        "phone": "9999988888"
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    "responses": {
-                        "200": {
-                            "description": "Teachers created successfully. Returns list of seatcodes assigned to the created teachers.",
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "type": "array",
-                                        "items": { "type": "string" },
-                                        "description": "Seatcodes of newly created teachers"
-                                    },
-                                    "example": ["KCP913369"]
-                                }
-                            }
-                        },
-                        "500": { "$ref": "#/components/responses/InternalServerError" }
-                    }
-                }
-            },
-
-            "/connect/5/31/api/v1/institutions/classes/{classId}/students": {
-                "post": {
-                    "tags": ["Students"],
-                    "summary": "Assign Students to a Class",
-                    "description": "Assigns one or more students to a class using their seatcodes. The `classId` path parameter identifies the target class division.",
-                    "operationId": "assignStudentsToClass",
-                    "parameters": [
-                        {
-                            "name": "classId",
-                            "in": "path",
-                            "required": true,
-                            "description": "ID of the target class division (cls-... UUID from Create Class Divisions response)",
-                            "schema": { "type": "string", "example": "cls-8894eddb-e8eb-4589-90f9-939a2b339251" }
-                        }
-                    ],
-                    "requestBody": {
-                        "required": true,
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": { "type": "string" },
-                                    "description": "List of student seatcodes to assign to the class"
-                                },
-                                "example": ["KCP913366"]
-                            }
-                        }
-                    },
-                    "responses": {
-                        "200": {
-                            "description": "Students assigned to class successfully. Returns the list of seatcodes that were processed.",
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "type": "array",
-                                        "items": { "type": "string" },
-                                        "description": "Seatcodes of students successfully assigned"
-                                    },
-                                    "example": ["KCP913366"]
-                                }
-                            }
-                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
                         "500": { "$ref": "#/components/responses/InternalServerError" }
                     }
                 }
@@ -590,48 +401,179 @@
                 "post": {
                     "tags": ["Institutional Structure"],
                     "summary": "Create Class Divisions",
-                    "description": "Creates one or more class divisions (e.g., Division A, Division B) under a grade within an academic year.",
+                    "description": "Creates one or more class divisions (e.g., Division A, Division B) under a grade within an Academic Year. The returned `id` values (prefixed `cls-`) are required for student assignment.\n\n**Prerequisite:** The grade must already be linked to a section, and the AY must be in **DRAFT** status.",
                     "operationId": "createClasses",
                     "requestBody": {
                         "required": true,
                         "content": {
                             "application/json": {
                                 "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ClassRequest" } },
-                                "example": [
-                                    {
-                                        "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76",
-                                        "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35",
-                                        "order": 1,
-                                        "label": "Division A"
-                                    }
-                                ]
+                                "example": [{ "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76", "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35", "order": 1, "label": "Division A" }]
                             }
                         }
                     },
                     "responses": {
                         "200": {
-                            "description": "Class divisions created successfully",
+                            "description": "Class divisions created successfully. Use the returned `id` values when assigning students to classes.",
                             "content": {
                                 "application/json": {
                                     "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ClassResponse" } },
-                                    "example": [
-                                        {
-                                            "id": "cls-8894eddb-e8eb-4589-90f9-939a2b339251",
-                                            "partition": 0,
-                                            "label": "Division A",
-                                            "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35",
-                                            "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76",
-                                            "tags": null,
-                                            "classTeacherId": null,
-                                            "order": 1,
-                                            "createdDate": "2026-05-11T16:53:24.560281391",
-                                            "lastModifiedDate": "2026-05-11T16:53:24.560281391",
-                                            "telegramChatId": null
-                                        }
-                                    ]
+                                    "example": [{ "id": "cls-8894eddb-e8eb-4589-90f9-939a2b339251", "partition": 0, "label": "Division A", "academicYearId": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35", "gradeId": "grd-452ca1b2-8277-4284-8283-babc2f328f76", "tags": null, "classTeacherId": null, "order": 1, "createdDate": "2026-05-11T16:53:24.560281391", "lastModifiedDate": "2026-05-11T16:53:24.560281391", "telegramChatId": null }]
                                 }
                             }
                         },
+                        "400": {
+                            "description": "Bad Request — AY is not in DRAFT status, or the grade is invalid or not linked to any section under this AY.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "NotDraftAY":    { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update not allowed for an Active or Closed Academic Year." } },
+                                        "InvalidGrade":  { "summary": "Grade not linked to any section", "value": { "errorCode": 1, "errorMessage": "Grade not found." } }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "500": { "$ref": "#/components/responses/InternalServerError" }
+                    }
+                }
+            },
+
+            "/connect/5/31/api/v1/institutions/students": {
+                "post": {
+                    "tags": ["Students"],
+                    "summary": "Create Students",
+                    "description": "Creates one or more student accounts under the institution. Returns a unique `seatcode` for each student, which is used for class assignment and Auto Login.\n\n**Phone Number:** Omit the `mobile` field to have TCE auto-generate a mobile number. This is the **recommended approach** as it enables the Studi Auto Login flow without additional steps.\n\n**Constraint:** The First Name + Last Name combination and GR Number must each be unique within the institution.",
+                    "operationId": "createStudents",
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StudentRequest" } },
+                                "example": [{ "firstName": "Aditya", "lastName": "Sharma", "grNumber": "KCPS-2019-001-036", "gender": "MALE", "dateOfBirth": "01/01/2014" }]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Students created successfully. Returns the system-generated `seatcode` for each student.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StudentResponse" } },
+                                    "example": [{ "seatcode": "KCP275536" }]
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Bad Request — One or more student records fail validation.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "DuplicateGR":     { "summary": "GR number already exists", "value": { "errorCode": 4, "errorMessage": "Duplicate record" } },
+                                        "DuplicateMobile": { "summary": "Mobile number already registered", "value": { "errorCode": 4, "errorMessage": "Duplicate record" } },
+                                        "InvalidDOB":      { "summary": "Date of birth must be DD/MM/YYYY", "value": { "errorCode": 4, "errorMessage": "Invalid data" } },
+                                        "InvalidGender":   { "summary": "Gender must be MALE, FEMALE, or OTHER", "value": { "errorCode": 4, "errorMessage": "Invalid data" } }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "500": { "$ref": "#/components/responses/InternalServerError" }
+                    }
+                }
+            },
+
+            "/connect/5/31/api/v1/institutions/classes/{classId}/students": {
+                "post": {
+                    "tags": ["Students"],
+                    "summary": "Assign Students to a Class",
+                    "description": "Assigns one or more students to a class division using their seatcodes. The `classId` path parameter is the `id` value returned by the Create Class Divisions endpoint.",
+                    "operationId": "assignStudentsToClass",
+                    "parameters": [
+                        {
+                            "name": "classId", "in": "path", "required": true,
+                            "description": "The class division ID (prefixed `cls-`) returned by the Create Class Divisions endpoint.",
+                            "schema": { "type": "string", "example": "cls-8894eddb-e8eb-4589-90f9-939a2b339251" }
+                        }
+                    ],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "type": "array", "items": { "type": "string" }, "description": "List of student seatcodes to assign to the class." },
+                                "example": ["KCP275536"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Students assigned to class successfully. Returns the list of processed seatcodes.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "type": "array", "items": { "type": "string" } },
+                                    "example": ["KCP275536"]
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Bad Request — The class ID is invalid, or one or more seatcodes are not found or do not belong to this institution.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "ClassNotFound":    { "summary": "Class division not found", "value": { "errorCode": 1, "errorMessage": "Class not found." } },
+                                        "InvalidSeatcode":  { "summary": "Seatcode not found or not from this institution", "value": { "errorCode": 1, "errorMessage": "Invalid seatcode." } }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "500": { "$ref": "#/components/responses/InternalServerError" }
+                    }
+                }
+            },
+
+            "/connect/5/31/api/v1/institutions/staff": {
+                "post": {
+                    "tags": ["Staff"],
+                    "summary": "Create Teachers",
+                    "description": "Creates one or more teacher accounts under the institution. Returns a unique `seatcode` for each teacher, which serves as the teacher identifier in subsequent API calls.\n\n**Phone Number:** Omit the `phone` field to have TCE auto-generate a mobile number. This is the **recommended approach** as it enables seamless TC Auto Login without OTP verification.\n\n**Constraint:** The First Name + Last Name combination must be unique within the institution.",
+                    "operationId": "createStaff",
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StaffRequest" } },
+                                "example": [{ "title": "Mr", "firstName": "Kartik", "lastName": "Shah", "gender": "MALE" }]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Teachers created successfully. Returns the list of system-generated seatcodes assigned to the created teachers.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "type": "array", "items": { "type": "string" }, "description": "Seatcodes of newly created teachers." },
+                                    "example": ["KCP913369"]
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Bad Request — One or more staff records fail validation.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "DuplicateMobile":    { "summary": "Mobile number already registered", "value": { "errorCode": 4, "errorMessage": "Duplicate record" } },
+                                        "ProfanityDetected":  { "summary": "Name contains disallowed characters", "value": { "errorCode": 4, "errorMessage": "Invalid data" } },
+                                        "InvalidTitle":       { "summary": "Title must be Mr, Mrs, Ms, or Dr", "value": { "errorCode": 4, "errorMessage": "Invalid data" } }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
                         "500": { "$ref": "#/components/responses/InternalServerError" }
                     }
                 }
@@ -641,157 +583,86 @@
 
         "components": {
             "responses": {
+                "Unauthorized": {
+                    "description": "Unauthorized — Bearer token is missing, expired, or invalid. Re-authenticate via the School Login API to obtain a new token.",
+                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "example": { "errorCode": 401, "errorMessage": "Unauthorized" } } }
+                },
                 "InternalServerError": {
-                    "description": "Internal Server Error — Please contact the TCE team for assistance.",
-                    "content": {
-                        "application/json": {
-                            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
-                            "example": {
-                                "errorCode": 500,
-                                "errorMessage": "WEB-MjAyNi0wNi0wOSAxNjoyMzoxNjo4OTg="
-                            }
-                        }
-                    }
+                    "description": "Internal Server Error — Contact the TCE integration team and provide the error reference code from the response body.",
+                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "example": { "errorCode": 500, "errorMessage": "WEB-MjAyNi0wNi0wOSAxNjoyMzoxNjo4OTg=" } } }
                 }
             },
             "schemas": {
-
                 "ErrorResponse": {
                     "type": "object",
                     "properties": {
-                        "errorCode":    { "type": "integer", "description": "Numeric error code identifying the type of failure.", "example": 4 },
-                        "errorMessage": { "type": "string",  "description": "Human-readable description of the error.",          "example": "We can only create draft AY with future start dates." }
+                        "errorCode":    { "type": "integer", "description": "Numeric error code. `1` = resource not found; `4` = validation or business rule failure.", "example": 4 },
+                        "errorMessage": { "type": "string",  "description": "Human-readable description of the error.", "example": "We can only create draft AY with future start dates." }
                     }
                 },
-
                 "AcademicYearRequest": {
                     "type": "object",
                     "required": ["label", "startDate", "endDate", "isActive"],
                     "properties": {
-                        "label":     { "type": "string",  "description": "Human-readable label",                           "example": "Academic Year Sep 26 - Aug 27" },
-                        "startDate": { "type": "integer", "format": "int64", "description": "Start date in epoch ms (IST)", "example": 1788546600000 },
-                        "endDate":   { "type": "integer", "format": "int64", "description": "End date in epoch ms (IST)",   "example": 1819650600000 },
-                        "isActive":  { "type": "boolean", "description": "Whether this academic year is active",            "example": true }
+                        "label":     { "type": "string",  "description": "Human-readable label for the Academic Year.", "example": "Academic Year Sep 2026 - Aug 2027" },
+                        "startDate": { "type": "integer", "format": "int64", "description": "Start date in epoch milliseconds (IST).", "example": 1788546600000 },
+                        "endDate":   { "type": "integer", "format": "int64", "description": "End date in epoch milliseconds (IST).", "example": 1819650600000 },
+                        "isActive":  { "type": "boolean", "description": "Set to `true` to mark this as the active Academic Year.", "example": true }
                     }
                 },
-
                 "AcademicYearResponse": {
                     "type": "object",
                     "properties": {
-                        "id":                   { "type": "string",  "description": "System UUID prefixed with 'aye-'", "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
-                        "label":                { "type": "string",  "example": "Academic Year Sep 26 - Aug 27" },
-                        "startDate":            { "type": "string",  "format": "date-time" },
-                        "endDate":              { "type": "string",  "format": "date-time" },
-                        "status":               { "type": "integer", "example": 1 },
-                        "createdDate":          { "type": "string",  "format": "date-time" },
-                        "lastModifiedDate":     { "type": "string",  "format": "date-time" },
-                        "curriculumId":         { "type": "string",  "nullable": true, "example": null }
+                        "id":               { "type": "string",  "description": "System-generated UUID prefixed with `aye-`.", "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
+                        "label":            { "type": "string",  "example": "Academic Year Sep 2026 - Aug 2027" },
+                        "startDate":        { "type": "string",  "format": "date-time" },
+                        "endDate":          { "type": "string",  "format": "date-time" },
+                        "status":           { "type": "integer", "description": "AY status code. `1` = DRAFT.", "example": 1 },
+                        "createdDate":      { "type": "string",  "format": "date-time" },
+                        "lastModifiedDate": { "type": "string",  "format": "date-time" },
+                        "curriculumId":     { "type": "string",  "nullable": true, "example": null }
                     }
                 },
-
-                "SetupModuleState": {
-                    "type": "object",
-                    "required": ["status", "enable"],
-                    "properties": {
-                        "status": {
-                            "type": "string",
-                            "enum": ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"],
-                            "description": "Completion status of this setup module",
-                            "example": "IN_PROGRESS"
-                        },
-                        "enable": {
-                            "type": "boolean",
-                            "description": "Whether this module is unlocked for the user",
-                            "example": true
-                        }
-                    }
-                },
-
-                "AYStateRequest": {
-                    "type": "object",
-                    "description": "Full state map. All 8 module keys must be present in every call.",
-                    "properties": {
-                        "instituteCalender":      { "$ref": "#/components/schemas/SetupModuleState" },
-                        "academicCalender":       { "$ref": "#/components/schemas/SetupModuleState" },
-                        "institutionalStructure": { "$ref": "#/components/schemas/SetupModuleState" },
-                        "staffAllocation":        { "$ref": "#/components/schemas/SetupModuleState" },
-                        "studentsAllocation":     { "$ref": "#/components/schemas/SetupModuleState" },
-                        "allClasses":             { "$ref": "#/components/schemas/SetupModuleState" },
-                        "promotion":              { "$ref": "#/components/schemas/SetupModuleState" },
-                        "licenseManagement":      { "$ref": "#/components/schemas/SetupModuleState" }
-                    }
-                },
-
-                "CalendarEventRequest": {
-                    "type": "object",
-                    "required": ["title", "startDate", "endDate", "allDay", "eventType", "repeat", "calendarType"],
-                    "properties": {
-                        "academicYearId": { "type": "string",  "description": "Empty string for INSTITUTIONAL events; aye-... ID for ACADEMIC events" },
-                        "title":          { "type": "string",  "example": "Term 1" },
-                        "description":    { "type": "string",  "example": "" },
-                        "startDate":      { "type": "integer", "format": "int64", "description": "Epoch ms", "example": 1788546600000 },
-                        "endDate":        { "type": "integer", "format": "int64", "description": "Epoch ms", "example": 1804098600000 },
-                        "allDay":         { "type": "boolean", "example": true },
-                        "eventType":      { "type": "string",  "enum": ["WEEK_OFF", "ACADEMIC", "VACATIONS"], "example": "ACADEMIC" },
-                        "repeat":         { "type": "string",  "enum": ["WEEKLY", "DAILY", "NONE"],            "example": "DAILY" },
-                        "metadata":       {
-                            "type": "string",
-                            "description": "JSON-encoded string. WEEK_OFF keys: color, repeatDays, until. ACADEMIC/VACATIONS keys: labelId, term, sortOrder.",
-                            "example": "{\"labelId\":64311425,\"term\":\"Term 1\",\"sortOrder\":1}"
-                        },
-                        "calendarType":   { "type": "string", "enum": ["INSTITUTIONAL", "ACADEMIC"], "example": "ACADEMIC" }
-                    }
-                },
-
                 "SectionRequest": {
                     "type": "object",
                     "required": ["label", "academicYearId", "order"],
                     "properties": {
                         "label":          { "type": "string",  "example": "Secondary" },
-                        "academicYearId": { "type": "string",  "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
-                        "order":          { "type": "integer", "description": "Display order", "example": 400 },
-                        "tags": {
-                            "type": "object",
-                            "properties": {
-                                "uniqId": { "type": "string", "description": "Tag to correlate with a pre-defined section type", "example": "sec-4" }
-                            }
-                        }
+                        "academicYearId": { "type": "string",  "description": "ID of the target Academic Year (from Create Academic Year response).", "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
+                        "order":          { "type": "integer", "description": "Display order of the section.", "example": 400 },
+                        "tags":           { "type": "object",  "properties": { "uniqId": { "type": "string", "description": "Tag to correlate with a predefined section type.", "example": "sec-4" } } }
                     }
                 },
-
                 "SectionResponse": {
                     "type": "object",
                     "properties": {
-                        "id":                   { "type": "string",  "description": "UUID prefixed with 'sec-'", "example": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1" },
-                        "label":                { "type": "string",  "example": "Secondary" },
-                        "academicYearId":       { "type": "string",  "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
-                        "tags":                 { "type": "object",  "properties": { "uniqId": { "type": "string" } } },
-                        "order":                { "type": "integer", "example": 400 },
-                        "createdDate":          { "type": "string",  "format": "date-time" },
-                        "lastModifiedDate":     { "type": "string",  "format": "date-time" }
+                        "id":               { "type": "string", "description": "System-generated UUID prefixed with `sec-`.", "example": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1" },
+                        "label":            { "type": "string", "example": "Secondary" },
+                        "academicYearId":   { "type": "string", "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
+                        "tags":             { "type": "object", "properties": { "uniqId": { "type": "string" } } },
+                        "order":            { "type": "integer", "example": 400 },
+                        "createdDate":      { "type": "string", "format": "date-time" },
+                        "lastModifiedDate": { "type": "string", "format": "date-time" }
                     }
                 },
-
                 "Grade": {
                     "type": "object",
                     "properties": {
-                        "id":     { "type": "string",  "description": "UUID prefixed with 'grd-'", "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" },
+                        "id":     { "type": "string",  "description": "System UUID prefixed with `grd-`.", "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" },
                         "title":  { "type": "string",  "example": "Class 9" },
                         "status": { "type": "string",  "enum": ["ACTIVE", "INACTIVE"], "example": "ACTIVE" },
-                        "order":  { "type": "integer", "description": "Increments of 100 (300=Nursery … 1700=Class 12)", "example": 1400 }
+                        "order":  { "type": "integer", "description": "Sort order in increments of 100 (300 = Nursery … 1700 = Class 12).", "example": 1400 }
                     }
                 },
-
                 "SectionGradeRequest": {
                     "type": "object",
                     "required": ["academicYearId", "sectionId", "gradeId"],
                     "properties": {
                         "academicYearId": { "type": "string", "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
-                        "sectionId":      { "type": "string", "description": "ID from Create Sections response", "example": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1" },
-                        "gradeId":        { "type": "string", "description": "ID from master grades list",       "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" }
+                        "sectionId":      { "type": "string", "description": "Section ID from the Create Sections response.", "example": "sec-13ee51ae-6c36-4bb1-9a91-aad278298bb1" },
+                        "gradeId":        { "type": "string", "description": "Grade ID from the Master Grade List.", "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" }
                     }
                 },
-
                 "SectionGradeResponse": {
                     "type": "object",
                     "properties": {
@@ -799,55 +670,46 @@
                         "gradeId":   { "type": "string", "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" }
                     }
                 },
-
                 "ClassRequest": {
                     "type": "object",
                     "required": ["gradeId", "academicYearId", "order", "label"],
                     "properties": {
-                        "gradeId":        { "type": "string",  "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" },
+                        "gradeId":        { "type": "string",  "description": "Grade ID from the Master Grade List.", "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" },
                         "academicYearId": { "type": "string",  "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
-                        "order":          { "type": "integer", "description": "Display order within the grade", "example": 1 },
+                        "order":          { "type": "integer", "description": "Display order within the grade.", "example": 1 },
                         "label":          { "type": "string",  "example": "Division A" }
                     }
                 },
-
                 "ClassResponse": {
                     "type": "object",
                     "properties": {
-                        "id":                   { "type": "string",  "description": "UUID prefixed with 'cls-'", "example": "cls-8894eddb-e8eb-4589-90f9-939a2b339251" },
-                        "partition":            { "type": "integer", "example": 0 },
-                        "label":                { "type": "string",  "example": "Division A" },
-                        "academicYearId":       { "type": "string",  "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
-                        "gradeId":              { "type": "string",  "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" },
-                        "tags":                 { "type": "object",  "nullable": true },
-                        "classTeacherId":       { "type": "string",  "nullable": true },
-                        "order":                { "type": "integer", "example": 1 },
-                        "createdDate":          { "type": "string",  "format": "date-time" },
-                        "lastModifiedDate":     { "type": "string",  "format": "date-time" },
-                        "telegramChatId":       { "type": "string",  "nullable": true }
+                        "id":               { "type": "string",  "description": "System UUID prefixed with `cls-`.", "example": "cls-8894eddb-e8eb-4589-90f9-939a2b339251" },
+                        "label":            { "type": "string",  "example": "Division A" },
+                        "academicYearId":   { "type": "string",  "example": "aye-30708a62-2c56-48ed-aac6-ee8d1f82ed35" },
+                        "gradeId":          { "type": "string",  "example": "grd-452ca1b2-8277-4284-8283-babc2f328f76" },
+                        "order":            { "type": "integer", "example": 1 },
+                        "createdDate":      { "type": "string",  "format": "date-time" },
+                        "lastModifiedDate": { "type": "string",  "format": "date-time" }
                     }
                 },
-
                 "StudentRequest": {
                     "type": "object",
                     "required": ["firstName", "lastName", "grNumber", "gender", "dateOfBirth"],
                     "properties": {
-                        "firstName":   { "type": "string",  "example": "ERPMAY" },
-                        "lastName":    { "type": "string",  "example": "SIX" },
-                        "grNumber":    { "type": "string",  "description": "General Register number — unique student identifier", "example": "KCPS-2019-001-036" },
+                        "firstName":   { "type": "string",  "example": "Aditya" },
+                        "lastName":    { "type": "string",  "example": "Sharma" },
+                        "grNumber":    { "type": "string",  "description": "General Register (GR) number — unique student identifier within the institution.", "example": "KCPS-2019-001-036" },
                         "gender":      { "type": "string",  "enum": ["MALE", "FEMALE", "OTHER"], "example": "MALE" },
-                        "dateOfBirth": { "type": "string",  "description": "Date in DD/MM/YYYY format", "example": "01/01/2014" },
-                        "mobile":      { "type": "string",  "description": "Mobile number. If omitted, auto-generated per school settings.", "example": "9999988888" }
+                        "dateOfBirth": { "type": "string",  "description": "Date of birth in `DD/MM/YYYY` format.", "example": "01/01/2014" },
+                        "mobile":      { "type": "string",  "description": "Optional. Mobile number. If omitted, TCE auto-generates a number — recommended for Auto Login compatibility.", "example": "9999988888" }
                     }
                 },
-
                 "StudentResponse": {
                     "type": "object",
                     "properties": {
-                        "seatcode": { "type": "string", "description": "System-generated unique seat code assigned to the student", "example": "KCP275536" }
+                        "seatcode": { "type": "string", "description": "System-generated unique seatcode assigned to the student.", "example": "KCP275536" }
                     }
                 },
-
                 "StaffRequest": {
                     "type": "object",
                     "required": ["title", "firstName", "lastName", "gender"],
@@ -856,10 +718,9 @@
                         "firstName": { "type": "string", "example": "Kartik" },
                         "lastName":  { "type": "string", "example": "Shah" },
                         "gender":    { "type": "string", "enum": ["MALE", "FEMALE", "OTHER"], "example": "MALE" },
-                        "phone":     { "type": "string", "description": "Mobile number. If omitted, auto-generated per school settings.", "example": "9999988888" }
+                        "phone":     { "type": "string", "description": "Optional. Mobile number. If omitted, TCE auto-generates a number — recommended for TC Auto Login compatibility.", "example": "9999988888" }
                     }
                 }
-
             }
         }
     };
@@ -868,10 +729,7 @@
         SwaggerUIBundle({
             spec,
             dom_id: '#swagger-ui',
-            presets: [
-                SwaggerUIBundle.presets.apis,
-                SwaggerUIStandalonePreset
-            ],
+            presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
             layout: "StandaloneLayout",
             docExpansion: "list",
             defaultModelsExpandDepth: 1,

@@ -63,6 +63,7 @@
     .step-is   { background: #7b5ea7; }
     .step-stu  { background: #d4436e; }
     .step-stf  { background: #0e9aa7; }
+    .step-cfg  { background: #2d9b6f; }
     .flow-arrow { width: 22px; height: 2px; background: #c0cad6; position: relative; flex-shrink: 0; }
     .flow-arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid #c0cad6; }
 
@@ -88,6 +89,7 @@
     .swagger-ui .opblock-tag[data-tag="Institutional Structure"] { border-left: 3px solid #7b5ea7 !important; }
     .swagger-ui .opblock-tag[data-tag="Students"]                { border-left: 3px solid #d4436e !important; }
     .swagger-ui .opblock-tag[data-tag="Staff"]                   { border-left: 3px solid #0e9aa7 !important; }
+    .swagger-ui .opblock-tag[data-tag="Class Configuration"]     { border-left: 3px solid #2d9b6f !important; }
     .swagger-ui .opblock { border-radius: var(--radius) !important; box-shadow: 0 1px 3px rgba(9,30,66,.08) !important; margin-bottom: 10px !important; }
     .swagger-ui .opblock .opblock-summary { padding: 13px 20px !important; }
     .swagger-ui .opblock-summary-description { font-family: 'IBM Plex Sans', sans-serif !important; font-size: 14px !important; font-weight: 500 !important; color: #344563 !important; }
@@ -170,11 +172,11 @@
 </div>
 
 <div class="notice notice-warning">
-  <strong>Setup Constraints:</strong> (1) Academic Years can only be created with <strong>future start dates</strong>. (2) Only <strong>one Draft Academic Year</strong> may exist per institution at any time — the existing draft must be activated or deleted before a new one can be created. (3) Sections, Grades, Classes, Students, and Teachers can only be modified while the Academic Year is in <strong>DRAFT status</strong>.
+  <strong>Setup Constraints:</strong> (1) Academic Years can only be created with <strong>future start dates</strong>. (2) Only <strong>one Draft Academic Year</strong> may exist per institution at any time — the existing draft must be activated or deleted before a new one can be created. (3) Sections, Grades, Classes, Students, and Teachers can only be modified while the Academic Year is in <strong>DRAFT status</strong>. (4) Subject-to-class assignments (Step 10) are only permitted in <strong>DRAFT status</strong>. (5) Class Teacher assignments (Step 11) are permitted in <strong>DRAFT or ACTIVE status</strong>.
 </div>
 
 <div class="flow-strip">
-  <div class="strip-label">Setup Sequence — 8 API Calls</div>
+  <div class="strip-label">Setup Sequence — 11 API Calls</div>
   <div class="flow-steps">
     <div class="flow-step step-ay"><span class="num">1</span>Create Academic Year</div>
     <div class="flow-arrow"></div>
@@ -191,6 +193,12 @@
     <div class="flow-step step-stu"><span class="num">7</span>Assign to Class</div>
     <div class="flow-arrow"></div>
     <div class="flow-step step-stf"><span class="num">8</span>Create Teachers</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-cfg"><span class="num">9</span>Get Subjects</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-cfg"><span class="num">10</span>Assign Subjects</div>
+    <div class="flow-arrow"></div>
+    <div class="flow-step step-cfg"><span class="num">11</span>Class Teacher</div>
   </div>
 </div>
 
@@ -216,7 +224,7 @@
         "openapi": "3.0.3",
         "info": {
             "title": "Academic Year Setup API",
-            "description": "APIs for provisioning an Academic Year on the TCE Connect platform. The setup follows a fixed 8-step sequence covering Academic Year creation, institutional structure (sections, grades, class divisions), student enrollment, and teacher provisioning.\n\n## Setup Sequence\n| Step | API | Endpoint |\n|---|---|---|\n| 1 | Create Academic Year | `POST /connect/4/1/api/v1/institutions/academicyears` |\n| 2 | Create Sections | `POST /connect/4/1/api/v1/institutions/sections` |\n| 3 | Fetch Master Grades | `GET /connect/5/1/api/v1/institutions/grades/master` |\n| 4 | Link Grades to Sections | `PUT /connect/4/1/api/v1/institutions/sections/grades` |\n| 5 | Create Class Divisions | `POST /connect/4/1/api/v1/institutions/classes` |\n| 6 | Create Students | `POST /connect/5/31/api/v1/institutions/students` |\n| 7 | Assign Students to Class | `POST /connect/5/31/api/v1/institutions/classes/{classId}/students` |\n| 8 | Create Teachers | `POST /connect/5/31/api/v1/institutions/staff` |\n\n## Key Constraints\n- Academic Years may only be created with **future start dates**.\n- Only **one Draft Academic Year** may exist per institution at a time.\n- All structural modifications (sections, grades, classes, student/teacher assignments) are only permitted while the Academic Year is in **DRAFT status**.\n- Student and teacher **phone numbers are optional**. Omitting them is recommended — TCE auto-generates mobile numbers, which enables seamless Auto Login flows.\n- The **First Name + Last Name combination must be unique** within the institution for both students and teachers.\n\n## Authentication\nAll endpoints require a valid Bearer token obtained via the School Login API (`POST /guide/rule-api/31/api/v2/erp/token`). Pass the token as `Authorization: Bearer <token>`.",
+            "description": "APIs for provisioning an Academic Year on the TCE Connect platform. The setup follows a fixed 11-step sequence covering Academic Year creation, institutional structure (sections, grades, class divisions), student enrollment, teacher provisioning, and class configuration (subjects and class teacher assignment).\n\n## Setup Sequence\n| Step | API | Endpoint |\n|---|---|---|\n| 1 | Create Academic Year | `POST /connect/4/1/api/v1/institutions/academicyears` |\n| 2 | Create Sections | `POST /connect/4/1/api/v1/institutions/sections` |\n| 3 | Fetch Master Grades | `GET /connect/5/1/api/v1/institutions/grades/master` |\n| 4 | Link Grades to Sections | `PUT /connect/4/1/api/v1/institutions/sections/grades` |\n| 5 | Create Class Divisions | `POST /connect/4/1/api/v1/institutions/classes` |\n| 6 | Create Students | `POST /connect/5/31/api/v1/institutions/students` |\n| 7 | Assign Students to Class | `POST /connect/5/31/api/v1/institutions/classes/{classId}/students` |\n| 8 | Create Teachers | `POST /connect/5/31/api/v1/institutions/staff` |\n| 9 | Get Subject List | `GET /connect/5/31/api/v1/institutions/subjects` |\n| 10 | Assign Subjects to Class | `POST /connect/5/31/api/v1/institutions/classes/{classId}/subjects` |\n| 11 | Assign Class Teacher | `PUT /connect/5/31/api/v1/institutions/classes/classteacher` |\n\n## Key Constraints\n- Academic Years may only be created with **future start dates**.\n- Only **one Draft Academic Year** may exist per institution at a time.\n- All structural modifications (sections, grades, classes, student/teacher assignments) are only permitted while the Academic Year is in **DRAFT status**.\n- Subject-to-class assignments (Step 10) are only permitted while the Academic Year is in **DRAFT status**.\n- Class Teacher assignment (Step 11) is permitted in **DRAFT or ACTIVE status**.\n- Student and teacher **phone numbers are optional**. Omitting them is recommended — TCE auto-generates mobile numbers, which enables seamless Auto Login flows.\n- The **First Name + Last Name combination must be unique** within the institution for both students and teachers.\n\n## Authentication\nAll endpoints require a valid Bearer token obtained via the School Login API (`POST /guide/rule-api/31/api/v2/erp/token`). Pass the token as `Authorization: Bearer <token>`.",
             "version": "1.0.0",
             "contact": { "email": "niteshg@tataclassedge.com" }
         },
@@ -224,7 +232,8 @@
             { "name": "Academic Year",           "description": "Create and manage academic years" },
             { "name": "Institutional Structure", "description": "Sections, grades, and class division management" },
             { "name": "Students",               "description": "Student enrollment and class assignment" },
-            { "name": "Staff",                  "description": "Teacher and staff provisioning" }
+            { "name": "Staff",                  "description": "Teacher and staff provisioning" },
+            { "name": "Class Configuration",    "description": "Subject assignment and class teacher configuration" }
         ],
         "paths": {
 
@@ -577,6 +586,148 @@
                         "500": { "$ref": "#/components/responses/InternalServerError" }
                     }
                 }
+            },
+
+            "/connect/5/31/api/v1/institutions/subjects": {
+                "get": {
+                    "tags": ["Class Configuration"],
+                    "summary": "Get Subject List",
+                    "description": "Returns the full catalogue of curriculum subjects available for this institution. Use the returned `subjectId` values when assigning subjects to a class in Step 10.\n\nOptionally pass one or more `subjectId` query parameters to fetch specific subjects by ID.",
+                    "operationId": "getSubjects",
+                    "parameters": [
+                        {
+                            "name": "subjectId",
+                            "in": "query",
+                            "required": false,
+                            "description": "One or more subject IDs to filter the response. Omit to return all subjects.",
+                            "schema": { "type": "array", "items": { "type": "string" } },
+                            "style": "form",
+                            "explode": true
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Subject list returned successfully.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "type": "array", "items": { "$ref": "#/components/schemas/CurriculumSubject" } },
+                                    "example": [
+                                        { "subjectId": "sub-ae8fce9e-0bfc-4c9c-9562-9d5823788a6b", "title": "Mathematics" },
+                                        { "subjectId": "sub-b3f1a2c4-1234-5678-abcd-ef0123456789", "title": "English" },
+                                        { "subjectId": "sub-c4e2b3d5-2345-6789-bcde-f01234567890", "title": "Science" }
+                                    ]
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "500": { "$ref": "#/components/responses/InternalServerError" }
+                    }
+                }
+            },
+
+            "/connect/5/31/api/v1/institutions/classes/{classId}/subjects": {
+                "post": {
+                    "tags": ["Class Configuration"],
+                    "summary": "Assign Subjects to a Class",
+                    "description": "Assigns one or more subjects to a class division. Optionally links a teacher (by seatcode) to each subject at the same time.\n\n**Teacher resolution:** The `teacherId` field accepts a teacher **seatcode** (e.g. `KCP913369`). The platform resolves it to the internal user ID automatically — do not pass the raw user OID.\n\n**Prerequisite:** The Academic Year must be in **DRAFT status**. Subjects cannot be reassigned once the year is activated.",
+                    "operationId": "assignSubjectsToClass",
+                    "parameters": [
+                        {
+                            "name": "classId",
+                            "in": "path",
+                            "required": true,
+                            "description": "The class division ID (prefixed `cls-`) returned by the Create Class Divisions endpoint.",
+                            "schema": { "type": "string", "example": "cls-8894eddb-e8eb-4589-90f9-939a2b339251" }
+                        }
+                    ],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ClassSubjectAssignRequest" } },
+                                "example": [
+                                    { "subjectId": "sub-ae8fce9e-0bfc-4c9c-9562-9d5823788a6b", "teacherId": "KCP913369", "isOptionalSubject": false },
+                                    { "subjectId": "sub-b3f1a2c4-1234-5678-abcd-ef0123456789" }
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Subjects assigned to the class successfully. Returns the created class–subject mappings.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ClassSubjectDto" } },
+                                    "example": [
+                                        { "classId": "cls-8894eddb-e8eb-4589-90f9-939a2b339251", "subjectId": "sub-ae8fce9e-0bfc-4c9c-9562-9d5823788a6b", "isOptionalSubject": false, "teacherId": "usr-a1b2c3d4-0000-0000-0000-000000000001" },
+                                        { "classId": "cls-8894eddb-e8eb-4589-90f9-939a2b339251", "subjectId": "sub-b3f1a2c4-1234-5678-abcd-ef0123456789", "isOptionalSubject": null, "teacherId": null }
+                                    ]
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Bad Request — Class not found, teacher seatcode not found, or the Academic Year is not in DRAFT status.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "ClassNotFound":    { "summary": "Class division ID not found", "value": { "errorCode": 1, "errorMessage": "Class not found." } },
+                                        "InvalidSeatcode":  { "summary": "Teacher seatcode not found or belongs to another institution", "value": { "errorCode": 1, "errorMessage": "Invalid seat code. Please check your seat code again. If it is still not working, Please reach out to your school to get a valid seat code." } },
+                                        "NotDraftAY":       { "summary": "Academic Year is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update is only allowed for draft AY." } }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "500": { "$ref": "#/components/responses/InternalServerError" }
+                    }
+                }
+            },
+
+            "/connect/5/31/api/v1/institutions/classes/classteacher": {
+                "put": {
+                    "tags": ["Class Configuration"],
+                    "summary": "Assign Class Teacher",
+                    "description": "Sets or replaces the Class Teacher for one or more class divisions. The `classTeacherId` field accepts a teacher **seatcode** (e.g. `KCP913369`); the platform resolves it to the internal user ID automatically.\n\n**Allowed statuses:** DRAFT and ACTIVE. This call will fail with a 400 if the Academic Year is CLOSED.\n\n**Partial update:** If any entry in the request has an empty `id` or `classTeacherId`, that entry is silently skipped. The endpoint returns `{\"success\": false}` (HTTP 200, not 400) when all class IDs in the request are invalid or not found — check the response body.",
+                    "operationId": "assignClassTeacher",
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/UpdateClassTeacherRequest" } },
+                                "example": [{ "id": "cls-8894eddb-e8eb-4589-90f9-939a2b339251", "classTeacherId": "KCP913369" }]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request processed. Check the `success` field — `true` means all valid class teachers were updated; `false` means no matching classes were found (not a hard error).",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/StatusResponse" },
+                                    "examples": {
+                                        "Success": { "summary": "Class teacher updated", "value": { "success": true } },
+                                        "NoMatch":  { "summary": "No valid class IDs found", "value": { "success": false } }
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Bad Request — Teacher seatcode not found or the Academic Year is CLOSED.",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                                    "examples": {
+                                        "InvalidSeatcode": { "summary": "Teacher seatcode not found or belongs to another institution", "value": { "errorCode": 1, "errorMessage": "Invalid seat code. Please check your seat code again. If it is still not working, Please reach out to your school to get a valid seat code." } },
+                                        "ClosedAY":        { "summary": "Academic Year is CLOSED — not allowed", "value": { "errorCode": 4, "errorMessage": "Update is not allowed." } }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "500": { "$ref": "#/components/responses/InternalServerError" }
+                    }
+                }
             }
 
         },
@@ -719,6 +870,45 @@
                         "lastName":  { "type": "string", "example": "Shah" },
                         "gender":    { "type": "string", "enum": ["MALE", "FEMALE", "OTHER"], "example": "MALE" },
                         "phone":     { "type": "string", "description": "Optional. Mobile number. If omitted, TCE auto-generates a number — recommended for TC Auto Login compatibility.", "example": "9999988888" }
+                    }
+                },
+                "CurriculumSubject": {
+                    "type": "object",
+                    "properties": {
+                        "subjectId": { "type": "string", "description": "System-generated unique subject ID prefixed with `sub-`.", "example": "sub-ae8fce9e-0bfc-4c9c-9562-9d5823788a6b" },
+                        "title":     { "type": "string", "description": "Display name of the subject.", "example": "Mathematics" }
+                    }
+                },
+                "ClassSubjectAssignRequest": {
+                    "type": "object",
+                    "required": ["subjectId"],
+                    "properties": {
+                        "subjectId":        { "type": "string", "description": "Subject ID from the Get Subject List response.", "example": "sub-ae8fce9e-0bfc-4c9c-9562-9d5823788a6b" },
+                        "teacherId":        { "type": "string", "description": "Optional. Teacher seatcode (e.g. `KCP913369`) returned by the Create Teachers endpoint. The platform resolves it to the internal user ID. Omit to assign the subject without a teacher.", "example": "KCP913369" },
+                        "isOptionalSubject":{ "type": "boolean", "description": "Optional. Set `true` if this is an elective/optional subject. Defaults to `false`.", "example": false }
+                    }
+                },
+                "ClassSubjectDto": {
+                    "type": "object",
+                    "properties": {
+                        "classId":          { "type": "string", "description": "The class division ID this mapping belongs to.", "example": "cls-8894eddb-e8eb-4589-90f9-939a2b339251" },
+                        "subjectId":        { "type": "string", "description": "The subject ID.", "example": "sub-ae8fce9e-0bfc-4c9c-9562-9d5823788a6b" },
+                        "isOptionalSubject":{ "type": "boolean", "nullable": true, "example": false },
+                        "teacherId":        { "type": "string", "nullable": true, "description": "Internal user OID of the assigned teacher (resolved from seatcode). `null` if no teacher was assigned.", "example": "usr-a1b2c3d4-0000-0000-0000-000000000001" }
+                    }
+                },
+                "UpdateClassTeacherRequest": {
+                    "type": "object",
+                    "required": ["id", "classTeacherId"],
+                    "properties": {
+                        "id":             { "type": "string", "description": "The class division ID (prefixed `cls-`) to assign the class teacher to.", "example": "cls-8894eddb-e8eb-4589-90f9-939a2b339251" },
+                        "classTeacherId": { "type": "string", "description": "Teacher seatcode (e.g. `KCP913369`) returned by the Create Teachers endpoint. The platform resolves it to the internal user ID.", "example": "KCP913369" }
+                    }
+                },
+                "StatusResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "description": "`true` if the operation completed successfully; `false` if no matching records were found (not a hard error — HTTP status remains 200).", "example": true }
                     }
                 }
             }

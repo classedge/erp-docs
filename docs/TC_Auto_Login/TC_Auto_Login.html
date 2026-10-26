@@ -333,13 +333,13 @@
         "properties": {
           "errorCode": {
             "type": "integer",
-            "description": "Numeric error code. `1` = resource not found; `4` = invalid request or business rule violation.",
-            "example": 400
+            "description": "Numeric error code identifying the failure type. `-2021` = invalid seatcode or request error.",
+            "example": -2021
           },
           "errorMessage": {
             "type": "string",
             "description": "Human-readable description of the error.",
-            "example": "Invalid seatcode"
+            "example": "Invalid seat code."
           }
         }
       }

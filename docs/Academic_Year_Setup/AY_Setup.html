@@ -253,8 +253,8 @@
                         }
                     },
                     "responses": {
-                        "200": {
-                            "description": "Academic Year created successfully. Use the returned `id` in all subsequent setup API calls.",
+                        "201": {
+                            "description": "Academic Year created successfully (HTTP 201). Use the returned `id` in all subsequent setup API calls.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/AcademicYearResponse" },
@@ -263,14 +263,16 @@
                             }
                         },
                         "400": {
-                            "description": "Bad Request — Start date is in the past, start date is after end date, or a Draft Academic Year already exists for this institution.",
+                            "description": "Bad Request — Start date is in the past or before the active AY end date, end date is before start date, a Draft AY already exists, or the institution has a ClassEdge-only agreement.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "PastStartDate":    { "summary": "Start date is in the past",             "value": { "errorCode": 4, "errorMessage": "We can only create draft AY with future start dates." } },
-                                        "DraftExists":      { "summary": "Draft AY already exists",                "value": { "errorCode": 4, "errorMessage": "Draft AY already exists." } },
-                                        "StartAfterEnd":    { "summary": "Start date is after end date",          "value": { "errorCode": 4, "errorMessage": "We can only create draft AY with start date before end date." } }
+                                        "PastStartDate":    { "summary": "Start date is in the past",                               "value": { "errorCode": 4, "errorMessage": "We can only create draft AY with future start dates." } },
+                                        "ActiveAYOverlap":  { "summary": "Start date is before active AY end date",                 "value": { "errorCode": 4, "errorMessage": "We can only create draft AY with future start dates." } },
+                                        "DraftExists":      { "summary": "Draft AY already exists",                                  "value": { "errorCode": 4, "errorMessage": "Draft AY already exists." } },
+                                        "StartAfterEnd":    { "summary": "End date is before start date",                           "value": { "errorCode": 4, "errorMessage": "Start date should not be greater than end date." } },
+                                        "ClassEdgeOnly":    { "summary": "Institution has a ClassEdge-only agreement",              "value": { "errorCode": 4, "errorMessage": "Cannot create AY for ClassEdge only agreement." } }
                                     }
                                 }
                             }
@@ -297,8 +299,8 @@
                         }
                     },
                     "responses": {
-                        "200": {
-                            "description": "Sections created successfully. Use the returned `id` values when linking grades to sections.",
+                        "201": {
+                            "description": "Sections created successfully (HTTP 201). Use the returned `id` values when linking grades to sections.",
                             "content": {
                                 "application/json": {
                                     "schema": { "type": "array", "items": { "$ref": "#/components/schemas/SectionResponse" } },
@@ -307,13 +309,14 @@
                             }
                         },
                         "400": {
-                            "description": "Bad Request — Academic Year ID is invalid, does not belong to this institution, or the AY is not in DRAFT status.",
+                            "description": "Bad Request — Academic Year ID is invalid, does not belong to this institution, the AY is not in DRAFT status, or the request body is malformed.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "InvalidAY":  { "summary": "Academic Year not found", "value": { "errorCode": 1, "errorMessage": "Academic year not found." } },
-                                        "NotDraftAY": { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update not allowed for an Active or Closed Academic Year." } }
+                                        "InvalidAY":         { "summary": "Academic Year not found",             "value": { "errorCode": 1, "errorMessage": "AcademicYear not found" } },
+                                        "NotDraftAY":        { "summary": "AY is not in DRAFT status",          "value": { "errorCode": 4, "errorMessage": "Update is only allowed for draft AY." } },
+                                        "InvalidBody":       { "summary": "Malformed JSON body",                "value": { "errorCode": 4, "errorMessage": "Invalid request body" } }
                                     }
                                 }
                             }
@@ -388,14 +391,13 @@
                             }
                         },
                         "400": {
-                            "description": "Bad Request — One or more IDs are invalid, the grade is already linked to this section, or the AY is not in DRAFT status.",
+                            "description": "Bad Request — Academic Year not found, or the AY is not in DRAFT status. Note: if a grade is already linked to the section it is **silently skipped** (not an error). Invalid sectionId or gradeId may result in a 500 from a DB constraint violation.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "InvalidSection": { "summary": "Section not found", "value": { "errorCode": 1, "errorMessage": "Section not found." } },
-                                        "InvalidGrade":   { "summary": "Grade not found in master list", "value": { "errorCode": 1, "errorMessage": "Grade not found." } },
-                                        "NotDraftAY":     { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update not allowed for an Active or Closed Academic Year." } }
+                                        "InvalidAY":    { "summary": "Academic Year not found",    "value": { "errorCode": 1, "errorMessage": "AcademicYear not found" } },
+                                        "NotDraftAY":   { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update is only allowed for draft AY." } }
                                     }
                                 }
                             }
@@ -422,8 +424,8 @@
                         }
                     },
                     "responses": {
-                        "200": {
-                            "description": "Class divisions created successfully. Use the returned `id` values when assigning students to classes.",
+                        "201": {
+                            "description": "Class divisions created successfully (HTTP 201). Use the returned `id` values when assigning students to classes.",
                             "content": {
                                 "application/json": {
                                     "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ClassResponse" } },
@@ -432,13 +434,13 @@
                             }
                         },
                         "400": {
-                            "description": "Bad Request — AY is not in DRAFT status, or the grade is invalid or not linked to any section under this AY.",
+                            "description": "Bad Request — Academic Year not found or is not in DRAFT status.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "NotDraftAY":    { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update not allowed for an Active or Closed Academic Year." } },
-                                        "InvalidGrade":  { "summary": "Grade not linked to any section", "value": { "errorCode": 1, "errorMessage": "Grade not found." } }
+                                        "InvalidAY":    { "summary": "Academic Year not found",    "value": { "errorCode": 1, "errorMessage": "AcademicYear not found" } },
+                                        "NotDraftAY":   { "summary": "AY is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update is only allowed for draft AY." } }
                                     }
                                 }
                             }
@@ -453,7 +455,7 @@
                 "post": {
                     "tags": ["Students"],
                     "summary": "Create Students",
-                    "description": "Creates one or more student accounts under the institution. Returns a unique `seatcode` for each student, which is used for class assignment and Auto Login.\n\n**Phone Number:** Omit the `mobile` field to have TCE auto-generate a mobile number. This is the **recommended approach** as it enables the Studi Auto Login flow without additional steps.\n\n**Constraint:** The First Name + Last Name combination and GR Number must each be unique within the institution.",
+                    "description": "Creates one or more student accounts under the institution. Returns a unique `seatcode` for each student, which is used for class assignment and Auto Login.\n\n**Phone Number:** Omit the `mobile` field to have TCE auto-generate a mobile number. This is the **recommended approach** as it enables the Studi Auto Login flow without additional steps.\n\n**GR Number:** Required for every student. If a student with the same GR number already exists in the institution, the call returns their existing `seatcode` instead of failing.\n\n**Licence pre-check:** The call validates that enough student licences are available before saving any student. If licences are insufficient the entire batch is rejected with a 400.",
                     "operationId": "createStudents",
                     "requestBody": {
                         "required": true,
@@ -465,8 +467,8 @@
                         }
                     },
                     "responses": {
-                        "200": {
-                            "description": "Students created successfully. Returns the system-generated `seatcode` for each student.",
+                        "201": {
+                            "description": "Students created successfully (HTTP 201). Returns the system-generated `seatcode` for each student. If a student's GR number already existed, their existing `seatcode` is returned.",
                             "content": {
                                 "application/json": {
                                     "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StudentResponse" } },
@@ -475,15 +477,18 @@
                             }
                         },
                         "400": {
-                            "description": "Bad Request — One or more student records fail validation.",
+                            "description": "Bad Request — GR number missing, duplicate GR numbers in the same batch, insufficient student licences, or mobile-number auto-generation failed.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "DuplicateGR":     { "summary": "GR number already exists", "value": { "errorCode": 4, "errorMessage": "Duplicate record" } },
-                                        "DuplicateMobile": { "summary": "Mobile number already registered", "value": { "errorCode": 4, "errorMessage": "Duplicate record" } },
-                                        "InvalidDOB":      { "summary": "Date of birth must be DD/MM/YYYY", "value": { "errorCode": 4, "errorMessage": "Invalid data" } },
-                                        "InvalidGender":   { "summary": "Gender must be MALE, FEMALE, or OTHER", "value": { "errorCode": 4, "errorMessage": "Invalid data" } }
+                                        "MissingGR":            { "summary": "GR number is blank for one or more students",  "value": { "errorCode": 4, "errorMessage": "GR number is required for all students" } },
+                                        "DuplicateGRInBatch":   { "summary": "Duplicate GR numbers within the same request", "value": { "errorCode": 4, "errorMessage": "Duplicate GR numbers in request: KCPS-001" } },
+                                        "NoLicences":           { "summary": "No student licences are available",            "value": { "errorCode": 4, "errorMessage": "No student licences are available" } },
+                                        "NotEnoughLicences":    { "summary": "Requested count exceeds available licences",   "value": { "errorCode": 4, "errorMessage": "Not enough student licences: requested 5, available 3" } },
+                                        "MobileConfigMissing":  { "summary": "School MOBILE_CONFIG setting not configured",  "value": { "errorCode": 4, "errorMessage": "Mobile config not found" } },
+                                        "InvalidDOB":           { "summary": "Date of birth format must be DD/MM/YYYY",      "value": { "errorCode": 4, "errorMessage": "Invalid Date of Birth" } },
+                                        "InvalidGender":        { "summary": "Gender must be MALE, FEMALE, or OTHER",        "value": { "errorCode": 4, "errorMessage": "gender is required" } }
                                     }
                                 }
                             }
@@ -532,8 +537,8 @@
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "ClassNotFound":    { "summary": "Class division not found", "value": { "errorCode": 1, "errorMessage": "Class not found." } },
-                                        "InvalidSeatcode":  { "summary": "Seatcode not found or not from this institution", "value": { "errorCode": 1, "errorMessage": "Invalid seatcode." } }
+                                        "ClassNotFound":    { "summary": "Class division not found",                              "value": { "errorCode": 1, "errorMessage": "Class not found" } },
+                                        "InvalidSeatcode":  { "summary": "Seatcode not found or not from this institution",       "value": { "errorCode": 1, "errorMessage": "Invalid seat code. Please check your seat code again. If it is still not working, Please reach out to your school to get a valid seat code." } }
                                     }
                                 }
                             }
@@ -548,14 +553,14 @@
                 "post": {
                     "tags": ["Staff"],
                     "summary": "Create Teachers",
-                    "description": "Creates one or more teacher accounts under the institution. Returns a unique `seatcode` for each teacher, which serves as the teacher identifier in subsequent API calls.\n\n**Phone Number:** Omit the `phone` field to have TCE auto-generate a mobile number. This is the **recommended approach** as it enables seamless TC Auto Login without OTP verification.\n\n**Constraint:** The First Name + Last Name combination must be unique within the institution.",
+                    "description": "Creates one or more teacher accounts under the institution. Returns a unique `seatcode` for each teacher, which serves as the teacher identifier in subsequent API calls.\n\n**Phone Number:** Omit the `phone` field to have TCE auto-generate a mobile number. This is the **recommended approach** as it enables seamless TC Auto Login without OTP verification.\n\n**Idempotency:** If a teacher with the same `teacherId` already exists, the call returns their existing `seatcode` without re-creating them.\n\n**Licence pre-check:** The call validates that enough teacher licences are available before saving any teacher. If licences are insufficient the entire batch is rejected with a 400.",
                     "operationId": "createStaff",
                     "requestBody": {
                         "required": true,
                         "content": {
                             "application/json": {
                                 "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StaffRequest" } },
-                                "example": [{ "title": "Mr", "firstName": "Kartik", "lastName": "Shah", "gender": "MALE" }]
+                                "example": [{ "teacherId": "ERP-TCH-001", "title": "Mr", "firstName": "Kartik", "lastName": "Shah", "gender": "MALE" }]
                             }
                         }
                     },
@@ -570,14 +575,16 @@
                             }
                         },
                         "400": {
-                            "description": "Bad Request — One or more staff records fail validation.",
+                            "description": "Bad Request — Teacher ID missing, insufficient teacher licences, or mobile-number auto-generation failed.",
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "DuplicateMobile":    { "summary": "Mobile number already registered", "value": { "errorCode": 4, "errorMessage": "Duplicate record" } },
-                                        "ProfanityDetected":  { "summary": "Name contains disallowed characters", "value": { "errorCode": 4, "errorMessage": "Invalid data" } },
-                                        "InvalidTitle":       { "summary": "Title must be Mr, Mrs, Ms, or Dr", "value": { "errorCode": 4, "errorMessage": "Invalid data" } }
+                                        "EmptyTeacherId":       { "summary": "teacherId field is blank",                          "value": { "errorCode": 1, "errorMessage": "Teacher Id is empty" } },
+                                        "NoLicences":           { "summary": "No teacher licences are available",                 "value": { "errorCode": 4, "errorMessage": "No teacher licences are available" } },
+                                        "NotEnoughLicences":    { "summary": "Requested count exceeds available licences",        "value": { "errorCode": 4, "errorMessage": "Not enough teacher licences: requested 2, available 1" } },
+                                        "MobileConfigMissing":  { "summary": "School MOBILE_CONFIG setting not configured",       "value": { "errorCode": 4, "errorMessage": "Mobile config not found" } },
+                                        "DuplicateName":        { "summary": "First + Last name already exists in institution",   "value": { "errorCode": 4, "errorMessage": "Duplicate record" } }
                                     }
                                 }
                             }
@@ -671,9 +678,9 @@
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/ErrorResponse" },
                                     "examples": {
-                                        "ClassNotFound":    { "summary": "Class division ID not found", "value": { "errorCode": 1, "errorMessage": "Class not found." } },
-                                        "InvalidSeatcode":  { "summary": "Teacher seatcode not found or belongs to another institution", "value": { "errorCode": 1, "errorMessage": "Invalid seat code. Please check your seat code again. If it is still not working, Please reach out to your school to get a valid seat code." } },
-                                        "NotDraftAY":       { "summary": "Academic Year is not in DRAFT status", "value": { "errorCode": 4, "errorMessage": "Update is only allowed for draft AY." } }
+                                        "ClassNotFound":    { "summary": "Class division ID not found",                                    "value": { "errorCode": 1, "errorMessage": "Class not found" } },
+                                        "InvalidSeatcode":  { "summary": "Teacher seatcode not found or belongs to another institution",  "value": { "errorCode": 1, "errorMessage": "Invalid seat code. Please check your seat code again. If it is still not working, Please reach out to your school to get a valid seat code." } },
+                                        "NotDraftAY":       { "summary": "Academic Year is not in DRAFT status",                         "value": { "errorCode": 4, "errorMessage": "Update is only allowed for draft AY." } }
                                     }
                                 }
                             }
@@ -863,8 +870,9 @@
                 },
                 "StaffRequest": {
                     "type": "object",
-                    "required": ["title", "firstName", "lastName", "gender"],
+                    "required": ["teacherId", "title", "firstName", "lastName", "gender"],
                     "properties": {
+                        "teacherId": { "type": "string", "description": "**Required.** Your ERP's unique identifier for this teacher. Used for idempotency — if a teacher with this teacherId already exists the call returns their existing seatcode.", "example": "ERP-TCH-001" },
                         "title":     { "type": "string", "enum": ["Mr", "Mrs", "Ms", "Dr"], "example": "Mr" },
                         "firstName": { "type": "string", "example": "Kartik" },
                         "lastName":  { "type": "string", "example": "Shah" },

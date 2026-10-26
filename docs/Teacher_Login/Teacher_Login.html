@@ -183,7 +183,7 @@
                 "## Key Constraints\n" +
                 "- The combination of **First Name + Last Name must be unique** within the institution.\n" +
                 "- **Phone number is optional.** Omitting it is strongly recommended — TCE auto-generates a mobile, which unlocks the simpler TC Auto Login flow.\n" +
-                "- All requests must use HTTPS and originate from Entrar's whitelisted IP addresses.\n\n" +
+                "- All requests must use HTTPS and originate from ERP's whitelisted IP addresses.\n\n" +
                 "## Environments\n" +
                 "| Environment | Host |\n|---|---|\n| Dev | `cx-dev-connect.devstudi.com` |\n| QA | `cx-qa.devstudi.com` |\n| Production | *Provided upon production onboarding* |",
             contact: { email: "niteshg@tataclassedge.com" }
@@ -237,11 +237,11 @@
                                 "application/json": {
                                     schema: { $ref: "#/components/schemas/ErrorResponse" },
                                     examples: {
-                                        "InvalidToken":  { summary: "Partner token is invalid or has expired (5-min TTL)", value: { errorCode: 4, errorMessage: "Please Contact Customer Support" } },
-                                        "InvalidOTP":    { summary: "Provided OTP does not match or has expired",           value: { errorCode: 4, errorMessage: "Please Contact Customer Support" } },
-                                        "InvalidMobile": { summary: "Teacher mobile number failed format validation",       value: { errorCode: 4, errorMessage: "Invalid mobile" } },
-                                        "InvalidName":   { summary: "First or last name failed validation",                 value: { errorCode: 4, errorMessage: "Invalid firstname" } },
-                                        "InvalidEmail":  { summary: "Email address failed format validation",               value: { errorCode: 4, errorMessage: "Invalid email" } }
+                                        "InvalidToken":  { summary: "Partner token is invalid or has expired (5-min TTL)", value: { errorCode: -2021, errorMessage: "Please Contact Customer Support" } },
+                                        "InvalidOTP":    { summary: "Provided OTP does not match or has expired",           value: { errorCode: -2021, errorMessage: "Please Contact Customer Support" } },
+                                        "InvalidMobile": { summary: "Teacher mobile number failed format validation",       value: { errorCode: -2021, errorMessage: "Invalid mobile" } },
+                                        "InvalidName":   { summary: "First or last name failed validation",                 value: { errorCode: -2021, errorMessage: "Invalid firstname" } },
+                                        "InvalidEmail":  { summary: "Email address failed format validation",               value: { errorCode: -2021, errorMessage: "Invalid email" } }
                                     }
                                 }
                             }
@@ -292,19 +292,19 @@
                                 "application/json": {
                                     schema: { $ref: "#/components/schemas/ErrorResponse" },
                                     examples: {
-                                        "ExpiredToken": { summary: "Partner token has expired (5-minute window elapsed)", value: { errorCode: 4, errorMessage: "Invalid seat code." } },
-                                        "InvalidToken": { summary: "Partner token is malformed or was not issued by TCE",  value: { errorCode: 4, errorMessage: "Invalid seat code." } }
+                                        "ExpiredToken": { summary: "Partner token has expired (5-minute window elapsed)", value: { errorCode: -2021, errorMessage: "Invalid seat code." } },
+                                        "InvalidToken": { summary: "Partner token is malformed or was not issued by TCE",  value: { errorCode: -2021, errorMessage: "Invalid seat code." } }
                                     }
                                 }
                             }
                         },
                         "401": { $ref: "#/components/responses/Unauthorized" },
                         "428": {
-                            description: "Precondition Required — Seatcode is in ASSIGNED state (registration not yet complete). Proceed to `POST /erp/verify` to complete OTP-based registration before retrying.",
+                            description: "Precondition Required — The seatcode is in ASSIGNED state and the teacher has not yet completed OTP-based registration. Call `POST /erp/verify` to complete registration before retrying. Response body is plain text.",
                             content: {
-                                "application/json": {
-                                    schema: { $ref: "#/components/schemas/ErrorResponse" },
-                                    example: { errorCode: 428, errorMessage: "OTP required to complete registration." }
+                                "text/plain": {
+                                    schema: { type: "string" },
+                                    example: "Seatcode not found."
                                 }
                             }
                         }
@@ -515,7 +515,7 @@
                 ErrorResponse: {
                     type: "object",
                     properties: {
-                        errorCode:    { type: "integer", description: "Numeric error code. `1` = not found; `4` = validation failure.", example: 4 },
+                        errorCode:    { type: "integer", description: "Numeric error code. `-2021` = invalid request or seatcode error (ERP endpoints); `1` = resource not found; `4` = validation failure (institution-side endpoints).", example: -2021 },
                         errorMessage: { type: "string",  description: "Human-readable description of the error.", example: "Invalid seat code." }
                     }
                 }
@@ -527,10 +527,10 @@
                         "application/json": {
                             schema: { $ref: "#/components/schemas/ErrorResponse" },
                             examples: {
-                                "InvalidPartnerToken": { summary: "Partner token is invalid or expired (5-min TTL)", value: { errorCode: 4, errorMessage: "Invalid seat code." } },
-                                "InvalidOTP":          { summary: "OTP is incorrect or expired",                     value: { errorCode: 4, errorMessage: "Please Contact Customer Support" } },
-                                "InvalidMobile":       { summary: "Teacher mobile number failed validation",         value: { errorCode: 4, errorMessage: "Invalid mobile" } },
-                                "InvalidName":         { summary: "Teacher name failed validation",                  value: { errorCode: 4, errorMessage: "Invalid firstname" } }
+                                "InvalidPartnerToken": { summary: "Partner token is invalid or expired (5-min TTL)", value: { errorCode: -2021, errorMessage: "Invalid seat code." } },
+                                "InvalidOTP":          { summary: "OTP is incorrect or expired",                     value: { errorCode: -2021, errorMessage: "Please Contact Customer Support" } },
+                                "InvalidMobile":       { summary: "Teacher mobile number failed validation",         value: { errorCode: -2021, errorMessage: "Invalid mobile" } },
+                                "InvalidName":         { summary: "Teacher name failed validation",                  value: { errorCode: -2021, errorMessage: "Invalid firstname" } }
                             }
                         }
                     }
